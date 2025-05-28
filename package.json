@@ -12,6 +12,9 @@
     "axios": "^1.7.7",
     "ejs": "^3.1.10",
     "express": "^4.21.0",
-    "request": "^2.88.2"
+    "firebase": "^10.14.1",
+    "request": "^2.88.2",
+    "moment": "^2.30.1",
+    "node-localstorage": "^2.2.1"
   }
 }

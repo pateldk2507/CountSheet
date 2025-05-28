@@ -7,6 +7,10 @@
     <link rel="icon" type="image/x-icon" href="http://haloitboard.corp.teleco.ca/favicon.ico">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+  
     <style>
         body {
             padding: 20px;
@@ -28,14 +32,49 @@
             .no-print {
                 display: none;
             }
+
+            
+          
         }
+        
+        .addWidth{
+            width: 15%;
+        }
+       
        
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
             -webkit-appearance: none;
              margin: 0;
         }
+
+        .flash-green {
+            background-color: green;
+            color: black;
+            animation: flash 2s forwards;
+        }
+
+        .flash-red {
+            background-color: red;
+            color: black;
+            animation: flash 2s forwards;
+        }
+
+        .details{
+            margin-top: 18px;
+            font-size: large;
+            color: #000000;
+          
+            font-weight: 600;
+        }
+
+        @keyframes flash {
+            0% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
     </style>
+
+
 </head>
 <body>
   
@@ -43,10 +82,9 @@
     
     <div class="row ">
         <div class="col-5">
-            <h5><b>Count Sheet <span id="sLocation"></span></b></h5>
+            <h5><b>Count Sheet <span class="sLocation"></span> Total Record : <span id="rowCount">0</span></b></h5>
         </div>
         <div class="col no-print" style="text-align: right;">
-            Select Location:=>
             <select id="location" class="btn btn-outline-secondary" onchange="getSelectedOption(this)" style="margin-bottom: 8px; padding: 8px;">
                 <option value="-0" disabled selected>Select Location</option>
                 <option value="0">All Location</option>
@@ -63,49 +101,144 @@
 
             <button type="button" id="btnModal" class="btn btn-primary" style="display: none;" data-toggle="modal" data-target="#staticBackdrop">    
             </button>
-         
+           
+            <label type="button" id="btnAddItem" class="btn btn-outline-secondary hidden" data-toggle="modal" data-target="#exampleModal">
+                <i class="fa-regular fa-square-plus"></i> Add Item
+            </label>
+
+            <!-- <label href="#" class="btn btn-outline-secondary" ><i class="fa-solid fa-plus"></i> Add Item</label> -->
+            <label href="#" class="btn btn-outline-secondary"  onclick="downloadVariance()"><i class="fa-solid fa-print"></i> Print</label>
             <label class="btn btn-outline-danger" id="btnHalo" style="display: none;">Post Data to HALO</label>
-            <label class="btn btn-outline-secondary" onclick="clearCount()"> <i class="fa-solid fa-trash"></i> Clear Count</label>
-            <label class="btn btn-outline-secondary" onclick="window.print();"> <i class="fa-solid fa-print"></i> Print</label>
-            <label class="btn btn-outline-secondary" onclick="downloadCSV()"><i class="fa-solid fa-file-arrow-down"></i> Get CSV</label>
-            <label class="btn btn-outline-secondary" for="csvFileInput"> <i class="fa-solid fa-file-arrow-up"></i> Upload CSV </label>
-            <label onclick="downloadHaloJson()"><i class="fa-solid fa-file-arrow-down"></i></label>
+            <!-- <label href="#" class="btn btn-outline-secondary"  onclick="clearCount()"> <i class="fa-solid fa-trash"></i> Clear Count</label> -->
+            
+            <label href="#" class="btn btn-outline-secondary"  onclick="downloadCSV()"><i class="fa-solid fa-file-arrow-down"></i> Get CSV</label>
+            <label href="#" class="btn btn-outline-secondary"  for="csvFileInput"> <i class="fa-solid fa-file-arrow-up"></i> Upload CSV </label>
+            <label href="#" class="btn btn-outline-secondary"  onclick="downloadHaloJson()"><i class="fa-solid fa-file-code"></i> Get JSON</label>
             <input type="file" id="csvFileInput" style="display: none;" accept=".csv" />
+
+            
         </div>
     </div>
  
 
 
-    <table style="width: 100%;border: 0px dotted rgb(155, 155, 155); text-align: left; padding: 5px;">
+    <table style="width: 100%;border: 0px dotted rgb(155, 155, 155); text-align: left; padding: 5px;" id="data-table">
         <thead style="border-bottom: 1px dotted rgb(155, 155, 155); font-size: large;">
-            <th style="width: 10%;">Item ID</th>
+            <th class="no-print" style="width: 10%;">Item ID</th>
             <th style="width: 45%; ">Item Description</th>
-            <th>SKU</th>
+            <th style="width: 20%;">SKU</th>
             <th >On Hand</th>
-            <th>Count</th>
-            <th style="text-align: right;" class="no-print">Diff.</th>
+            <th id="th-count">Count</th>
+            <th style="text-align: right;" id="diff">QTY Diff</th>
+            <th style="text-align: right;" id="cost">Cost Vari</th>
         </thead>
         <tbody>
             
-            
-            <% data.forEach(function(item){ %>
-                <tr class="itemRow" style="border-bottom: 1px dotted rgb(155, 155, 155);" data-location-id=<%= item.LocationID %> > 
-                    <td><%= item.ItemID%></td>
-                    <td style="text-align: left;"><%= item.ItemDesc%></td>
-                    <td style="text-align: left;"><%= item.SKU%></td>
-                    <td  id=<%='onhand-'+item.ItemID+'-'+item.LocationID %>><%= item.OnHand%></td>
-                    <td><input type="number" id=<%='input-'+item.ItemID+'-'+item.LocationID %> style="width: 50px;" min="0" required/></td>
-                    <td style="text-align: right;" class="no-print" id=<%='diff-'+item.ItemID+'-'+item.LocationID %>></td>
-                </tr>
-            <% }); %>
+            <%
+                function cleanData(str){
+                    if(str.includes(',')){
+                        return str.replace(/,/g, '-');
+                    }
+                    return str;
+                }
 
+                var qtyDiff=[] , costVari = [];
+
+             
+            %>
+            <% if (data) { %>
+                <% Object.keys(data).forEach(locationID => { %>
+                    <% const location = data[locationID]; 
+                       const itemsArray = Object.keys(location.Items).map(itemID => location.Items[itemID]); %>
+                    
+                    <% // Sort items by SKU in ascending order %>
+                    <% itemsArray.sort((a, b) => a.SKU.localeCompare(b.SKU)); %>
+                    
+                    <% itemsArray.forEach(item => { %>
+                        <tr class="itemRow" style="border-bottom: 1px dotted rgb(155, 155, 155);" data-location-id=<%= location.LocationID %>> 
+                            <td class="no-print"><%= item.ItemID %></td>
+                            <td style="text-align: left;"><%= cleanData(item.ItemDesc) %> - <%= location.Location %></td>
+                            <td style="text-align: left;"><%= cleanData(item.SKU) %></td>
+                            <td id=<%='onhand-'+item.ItemID+'-'+location.LocationID %>><%= item.OnHand %></td>
+                            <td style="color: transparent;" class="magic">
+                                <input type="number" id=<%='input-'+item.ItemID+'-'+location.LocationID %> style="width: 50px;" min="0" value='<%= item.Count %>' required/> 
+                                <%= item.Count %>
+                            </td>
+                            <td style="text-align: right;" id=<%='diff-'+item.ItemID+'-'+location.LocationID %>> 
+                                <%= item.Count ? (item.Count - item.OnHand) : '' %>
+                            </td>
+                            <td style="text-align: right;" data-cost=<%= item.Cost %> id=<%='cost-'+item.ItemID+'-'+location.LocationID %>> 
+                                <%= item.Count ? (item.Count - item.OnHand) * item.Cost : '' %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                    
+                <% }) %>
+                <tr class="details">
+                    <td class="no-print"></td>
+                    <td colspan="4" style="text-align: end;">Total</td>
+                    <td style="text-align: end;" id="diffMain"> </td>
+                    <td style="text-align: end;" id="costMain"> </td>
+                </tr>
+            <% } else { %>
+                <tr>
+                    <td colspan="8">No products available.</td>
+                </tr>
+            <% } %>
         </tbody>
 
       
     </table>
     
-    <center> -----<span>Total items on Record:  <span id="rowCount">0</span>-----</span></center>
-       
+    <center class="details hidden no-print "> ••••• <span>Total Record:  <span id="rowCount">0</span> ••••• <span id="reportData" class="hidden no-print">   </span> </span></center>
+      
+    <div class="no-print" style="margin-top: 25px;" id="addTableContent">
+        <h5><b>Additional Items : <span id="addRowCount">0</span> <span class="sLocation hidden no-print"></span></b></h5>
+    
+    <table style="width: 100%;border: 0px dotted rgb(155, 155, 155); text-align: left; padding: 5px;" id="add-data-table">
+        <thead style="border-bottom: 1px dotted rgb(155, 155, 155); font-size: large;">
+            <th class="no-print" style="width: 10%;">Item ID</th>
+            <th style="width: 45%; ">Item Description</th>
+            <th  style="width: 20%;">SKU</th>
+            <th >On Hand</th>
+            <th>Count</th>
+            <th style="text-align: right;" id="diff">QTY Diff</th>
+            <th style="text-align: right;" id="cost">Cost Vari</th>
+        </thead>
+        <tbody id="addtItemTable">
+        </tbody>
+        <tr class="details">
+            <td class="no-print"></td>
+            <td colspan="4" style="text-align: end;">Total</td>
+            <td style="text-align: end;" id="diffAdd"> </td>
+            <td style="text-align: end;" id="costAdd"> </td>
+        </tr>
+            
+    </table>
+    <center class="details"> ••••• <span>Cost Variance :  <span id="totalCostVariance">0</span> ••••• <span id="addReportData" class="no-print hidden">   </span> </span></center>
+    </div>
+
+    <table border="1" id="extraTable" class="hidden no-print" style="width: 100%;border: 1px solid black; text-align: center; padding: 5px;">
+        <thead>
+            <tr>
+                <th colspan="3">Add Extra Items here</th>
+            </tr>
+            <tr>
+                <th style="width: 50%;">Item Name</th>
+                <th style="width: 30%;">SKU</th>
+                <th style="width: 20%;">Count</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for (let i = 1; i <= 20; i++) { %>
+                <tr>
+                    <td style="padding: 20px;"></td>
+                    <td  style="padding: 20px;"></td>
+                    <td  style="padding: 20px;"></td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
       
     <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -128,15 +261,102 @@
             </div>
           </div>
         </div>
-      </div>
+    </div>
 
-    <script>
-         const locationSelect = document.getElementById('location');
-        const rows = document.querySelectorAll('.itemRow');
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel"></h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="getItemDetail(event)">
+                    <div class="row p-2 m-1">
+                        <input type="text" class="form-control col-7" id="inputSKU" placeholder="Enter SKU"  required/> 
+                       
+                        <button type="submit" class="btn btn-outline-secondary col-4 ml-2"> <i class="fa-solid fa-plus"></i> Add Item in List </button>
+                     </div>
+                </form>
+                <div id="errorBox" class="hidden">
+                    <p class="text-danger">Item already exist in list. Please update the count in List</p>
+                </div>
+                <div>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr style="text-align: center;">
+                                <th class="no-print"  scope="col">Item ID</th>
+                                <th  scope="col" style="width: 50%;">Description</th>
+                                <th  scope="col" style="width: 15%;">SKU</th>
+                                <th  scope="col">Price</th>
+                                <th  scope="col" style="width: 15%;">Count</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="itemDetailsBody">
+                            <!-- Item details will be added here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-warning" onclick="saveNewItemToDb()">Save</button>
 
+            </div>
+          </div>
+        </div>
+    </div>
+
+   <script>
+        const locationSelect = document.getElementById('location');
+        // const rows = document.querySelectorAll('.itemRow');
+        const rw = document.getElementsByClassName('itemRow');
+        const rows = Array.from(rw);
         const rowCountLabel = document.getElementById('rowCount');
 
+        var totalMissingItems =0, totalEstLost = 0;
         var jsonData=[];
+
+        
+
+        async function  getItemDetail(event){
+            event.preventDefault();
+            let SKU =  document.getElementById('inputSKU').value;
+            fetch('inventory/data?SKU=' + SKU)
+            .then(response => response.json())
+            .then( async data => {
+                let res = data.data.items[0];
+                const exist = await checkItemExists(localStorage.getItem('locationCode'),res.id);
+                console.log(exist);
+                if(exist){
+                    document.getElementById('errorBox').classList.remove('hidden');
+                }else{
+                    document.getElementById('errorBox').classList.add('hidden');
+                    const tableBody = document.getElementById('itemDetailsBody');
+                    const newRow = document.createElement('tr');
+                    newRow.style.textAlign ='center';
+                    newRow.innerHTML = `
+                        <td scope="row">${res.id}</td>
+                        <td>${res.description}</td>
+                        <td>${res.supplier_part_code}</td>
+                        <td>${res.costprice}</td>
+                        <td><input type='number' min='0' required  style="width: 50%;"/> </td>
+                        <td><button class="btn btn-outlined-danger" onclick="removeRow(this)"><i class="fa-solid fa-trash"></i></button></td>
+                    `;
+                    tableBody.appendChild(newRow);
+                    console.log(` ID: ${res.id} Item Name: ${res.description} Item SKU: ${res.supplier_part_code} Cost: ${res.costprice}` );
+                }
+            })
+        }
+
+        function removeRow(button) {
+            // Remove the row of the clicked button
+            const row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+        }
 
         // Function to update the count of visible rows
         function updateRowCount() {
@@ -146,7 +366,14 @@
 
         // Function to filter rows based on selected location
         function filterRows() {
+            
+            totalMissingItems=0;
+            totalEstLost=0;
+
+            document.getElementById('reportData').innerText='';
+            
             const selectedLocation = locationSelect.value;
+
             rows.forEach(row => {
                 if (selectedLocation === "" || selectedLocation === "0" || row.dataset.locationId === selectedLocation) {
                     row.classList.remove('hidden'); // Show the row
@@ -160,24 +387,174 @@
         var fileName='';
         function getSelectedOption(location){
             filterRows();
-            document.title = 'Count Sheet - ' + location.options[location.selectedIndex].text;
-            document.getElementById('sLocation').innerText = ' - ' + location.options[location.selectedIndex].text;
-            fileName =  location.options[location.selectedIndex].text;
-            localStorage.setItem('location',location.options[location.selectedIndex].text);
+            getCountDiff(location.value);
+            localStorage.setItem('locationCode',location.value);
+            let locationName = location.options[location.selectedIndex].text;
+            if(locationName && locationName != 'All Location'){
+                document.getElementById('btnAddItem').classList.remove('hidden');
+            }else if(locationName == 'All Location'){
+                document.getElementById('btnAddItem').classList.add('hidden');
+            }
+            document.title = 'Count Sheet - ' + locationName;
+            let sLocation = document.getElementsByClassName('sLocation');
+            sLocation[0].innerText = ' - ' + locationName;
+            sLocation[1].innerText = ' - ' + locationName;
+            fileName =  locationName;
+            document.getElementById('exampleModalLabel').innerText = 'Add Item at Location : ' + locationName;
+
+            localStorage.setItem('location',locationName);
+
+            localStorage.setItem('costVari',0);
+            localStorage.setItem('addcostVari',0);
+            document.getElementById('diffMain').innerText = Math.abs(0);
+            document.getElementById('costMain').innerText =  parseFloat(0.0).toFixed(2);
+            document.getElementById('diffAdd').innerText = Math.abs(0);
+            document.getElementById('costAdd').innerText =  parseFloat(0.0).toFixed(2);
+            document.getElementById('totalCostVariance').innerText = 0;
+
+            const tableBody = document.getElementById('addtItemTable');
+            while (tableBody.firstChild) {
+                tableBody.removeChild(tableBody.firstChild);
+            }
+            getAllAddItems();
+        }
+
+        function downloadVariance(){
+            
+            document.getElementById('extraTable').classList.remove('hidden');
+
+            const rw = document.querySelectorAll(`tr[data-location-id='${locationSelect.value}']`);
+            const visibleRows = Array.from(rows).filter(row => !row.classList.contains('hidden'));
+            const numberInputs = document.querySelectorAll('input[type="number"]');
+            const magicElements = document.querySelectorAll('.magic');
+
+            let count =0;
+
+            rw.forEach(row => {
+               if(!row.querySelector('input[type="number"]').value){
+                    count++;
+               }
+            });
+
+            if(count==visibleRows.length){
+
+                numberInputs.forEach(input => {
+                    input.style.display = 'none';
+                });
+
+                magicElements.forEach(element => {
+                    element.style.color = 'black';
+                });
+
+                rw.forEach(row => {
+                    const tds = document.querySelectorAll('td[id^="diff"], td[id^="cost"]');
+                    
+                    tds.forEach(td => {
+                        td.classList.add('no-print');
+                    });
+                });
+
+                document.getElementById('th-count').classList.add('addWidth');
+                document.getElementById('diff').classList.add('no-print');
+                document.getElementById('cost').classList.add('no-print');
+
+
+            window.print();
+
+                const checkPrintDialogClosed = setInterval(() => {
+                // Try to focus on the window; if it succeeds, the print dialog is likely closed
+                    if (document.activeElement === document.body) {
+                        clearInterval(checkPrintDialogClosed);
+
+                       
+                        // Restore visibility of the inputs
+                        numberInputs.forEach(input => {
+                            input.style.display = '';
+                        });
+                        magicElements.forEach(element => {
+                            element.style.color = 'transparent';
+                        });
+                        document.getElementById('th-count').classList.remove('addWidth');
+                        document.getElementById('extraTable').classList.add('hidden');
+                    }
+                }, 100); // Check every 100 milliseconds
+            }else{
+
+                numberInputs.forEach(input => {
+                    input.style.display = 'none';
+                });
+                
+                magicElements.forEach(element => {
+                    element.style.color = 'black';
+                });
+
+
+                rw.forEach(row => {
+                    const tds = document.querySelectorAll('td[id^="diff"], td[id^="cost"]');
+                    
+                    tds.forEach(td => {
+                        td.classList.remove('no-print');
+                    });
+                });
+                document.getElementById('th-count').classList.remove('addWidth');
+                document.getElementById('diff').classList.remove('no-print');
+                document.getElementById('cost').classList.remove('no-print');
+               
+            window.print();
+
+          
+
+               const checkPrintDialogClosed = setInterval(() => {
+                    // Try to focus on the window; if it succeeds, the print dialog is likely closed
+                    if (document.activeElement === document.body) {
+                        clearInterval(checkPrintDialogClosed);
+                        // Restore visibility of the inputs
+                        numberInputs.forEach(input => {
+                            input.style.display = '';
+                        });
+                        magicElements.forEach(element => {
+                            element.style.color = 'transparent';
+                        });
+                        document.getElementById('th-count').classList.remove('addWidth');
+                        document.getElementById('extraTable').classList.add('hidden');
+                    }
+                }, 100); // Check every 100 milliseconds
+            }
         }
 
         function downloadCSV() {
-            
+        
             const csvRows = [];
-            const headers = Array.from(document.querySelectorAll('table th')).map(th => th.innerText);
+            const headers = Array.from(document.querySelectorAll('#data-table th')).map(th => th.innerText);
             csvRows.push(headers.join(','));
+          
+            let totalCell7 = 0; // Total for column 7
+            let location = localStorage.getItem('locationCode');
 
-            // Get data from visible rows
-            const visibleRows = Array.from(rows).filter(row => !row.classList.contains('hidden'));
-            visibleRows.forEach(row => {
-                const cols = Array.from(row.querySelectorAll('td')).slice(0, 4).map(td => td.innerText); // Exclude input
-                csvRows.push(cols.join(','));
+            // Get data from visible rows of the specified tables
+            const tables = [document.getElementById('data-table'), document.getElementById('add-data-table')];
+            tables.forEach(table => {
+                if (table) { // Check if the table exists
+                    const rows = table.querySelectorAll('tr');
+                    const visibleRows = Array.from(rows).filter(row => !row.classList.contains('hidden') && row.querySelector('td') && row.getAttribute('data-location-id') == location);
+                    
+                    visibleRows.forEach(row => {
+                        const cols = Array.from(row.querySelectorAll('td')).slice(0, 7).map(td => {
+                            const cellText = td.innerText.replace(/,/g, '-').trim();
+                            return cellText;
+                        });
+                        csvRows.push(cols.join(','));
+                       
+                        const cell7Value = parseFloat(cols[6].replace(/-/g,'')) || 0; // Column index 6 is the 7th cell
+                       
+                        totalCell7 += cell7Value;
+                    });
+                }
             });
+                const totalsRow = Array(5).fill('') // Fill first 5 cells with empty strings
+                        .concat('Total Variance', totalCell7) // Add totals for cell 6 and cell 7
+                        .join(',');
+                csvRows.push(totalsRow);
 
             // Create a CSV file and trigger download
             const csvString = csvRows.join('\n');
@@ -190,13 +567,22 @@
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
+
+
         }
 
         function clearCount(){
             const input = document.querySelectorAll('input[type="number"]');
             input.forEach(input => input.value = '');
+            
             const tdElements = document.querySelectorAll('td[id^="diff"]');
             tdElements.forEach(td => td.textContent = '');
+
+            const costElements = document.querySelectorAll('td[id^="cost"]');
+            costElements.forEach(td => td.textContent = '');
+
+            totalEstLost=0;
+            totalMissingItems=0;
         }
 
         const csvFileInput = document.getElementById('csvFileInput');
@@ -207,6 +593,9 @@
             const file = event.target.files[0];
             const rw = document.querySelectorAll(`tr[data-location-id='${locationSelect.value}']`);
             document.getElementById('btnModal').click();
+
+            document.getElementById('diff').classList.remove('hidden');
+            document.getElementById('cost').classList.remove('hidden');
 
             document.getElementById('ufileName').innerText = file.name;
             document.getElementById('seledtedLocation').innerText = localStorage.getItem('location');
@@ -224,6 +613,9 @@
 
                     const quantities = {};
                     const onHand = {};
+                    
+                    totalEstLost = 0;
+                    totalMissingItems =0;
                 
                     data.forEach(row => {
                         if (row.length >= 2) {
@@ -232,24 +624,43 @@
                             const qty = row[3].trim();
                             quantities[itemId] = quantity; // Store quantity by Item ID
                             onHand[itemId] = qty;
+                           
                             count++;
                         }
                     });
 
                   
                     // Update input boxes with quantities from CSV
+                  
                     rw.forEach(row => {
                         
                         const itemId = row.cells[0].innerText; // Assuming Item ID is in the first cell
                         if (quantities[itemId] !== undefined) {
                             if(file.name.includes(localStorage.getItem('location')) && count-1 == document.getElementById('rowCount').innerText){
                                 row.querySelector('input[type="number"]').value = quantities[itemId];
+                               
                                 document.getElementById(`diff-${itemId}-${location}`).innerText = quantities[itemId] - onHand[itemId];
+
+                                totalMissingItems += (quantities[itemId] - onHand[itemId]);
+
+                                let costEle = document.getElementById(`cost-${itemId}-${location}`);
+                                
+                                costEle.innerText = (costEle.dataset.cost * (quantities[itemId] - onHand[itemId])).toFixed(2);
+                                
+                                totalEstLost += (costEle.dataset.cost * (quantities[itemId] - onHand[itemId]));
+
+                                updateFirebaseOnFileUpload(location,itemId,quantities[itemId]);
+                               
                                 document.getElementById('warningText').style.color = 'green';
                                 document.getElementById('warningText').innerText = 'Data imported successfully';
                                 document.getElementById('csvFileInput').value= '';
-                                console.log(quantities);
-                                jsonData.push({
+                               
+
+
+                                document.getElementById('reportData').innerText = ' Total Lost Items: ' + totalMissingItems * -1 + ' ••••• Total Estimated Loss: ' + totalEstLost.toFixed(2);
+                                
+                                if(quantities[itemId] - onHand[itemId] != 0){
+                                    jsonData.push({
                                                 "item_id": itemId,
                                                 "stocklocation_id": locationSelect.value,
                                                 "stockbin_id": quantities[itemId] - onHand[itemId],
@@ -258,10 +669,8 @@
                                                 "note": "Inventory count update",
                                                 "is_stock_take": true
                                             });
-                                               
-                               
-                                            
-
+                                } 
+                                   
                                 // document.getElementById('btnHalo').style.display = 'inline-block';
                             }else{
                                 row.querySelector('input[type="number"]').value = '';
@@ -273,34 +682,489 @@
                             }
                         }
                     });
+
+                    updateDifferenceOnFileUpload(location,totalEstLost,totalMissingItems);
+
+                    console.log('Loss ', totalEstLost , ' Diff ', totalMissingItems);
+                    
                 };
                 reader.readAsText(file);
             }
         });
 
+        document.getElementById('reportData').innerText='';
 
-        function downloadHaloJson(){
-            const dataStr = JSON.stringify(jsonData, null, 2);
-            const blob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
+         async function downloadHaloJson(){
+            let dataStr = [];
+            if(jsonData.length == 0){
+               await getJsonData(locationSelect.value).then( data =>{
+                setTimeout(()=>{
+                    console.log(JSON.stringify(data));
+                    dataStr = JSON.stringify(data,null,2);
+                    const blob = new Blob([dataStr], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'data.json';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                },1000);
+                
+                });     
+            }else{
+                dataStr = JSON.stringify(jsonData, null, 2);
+                const blob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
 
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'data.json';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'data.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+
+            
         }
 
+        window.addEventListener('beforeunload', () => {
+            localStorage.clear();
+        });
+        
+        </script>
+        <script type="module">
+        // Import the Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+        import { getDatabase, ref, set, update, onValue, get } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyBXdAmIp2xkXKYA_aUsJ00mmYMC9EfJIvw",
+            authDomain: "dashboard-it-3aa1e.firebaseapp.com",
+            databaseURL: "https://dashboard-it-3aa1e-default-rtdb.firebaseio.com",
+            projectId: "dashboard-it-3aa1e",
+            storageBucket: "dashboard-it-3aa1e.appspot.com",
+            messagingSenderId: "667956918947",
+            appId: "1:667956918947:web:36b220391f8542d4025d16",
+            measurementId: "G-YSGKTJ5PGW"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        
+        export async function updateFirebaseOnFileUpload(location,item,count) { 
+
+            let path = ref(database,`locations/${location}/Items/${item}`);
+            update(path, {Count: count})
+            .then(()=>{console.log('count updated')})
+            .catch((error)=> {console.error('Error updating data: ',error)});   
+        }
+
+        export async function updateDifferenceOnFileUpload(location,cost,qty) { 
+            let path = ref(database,`locations/${location}`);
+            update(path, {CostDiff: cost,QtyDiff:qty})
+            .then(()=>{console.log('count updated')})
+            .catch((error)=> {console.error('Error updating data: ',error)});   
+        }
+  
+        export async function getCountDiff(location){
+            get(ref(database, `locations/${location}`)).then((snapshot)=>{
+                if(snapshot.exists()){
+                    const data = snapshot.val();
+                        if(data.QtyDiff && data.CostDiff){
+                            localStorage.setItem('costVari', parseFloat(data.CostDiff).toFixed(2) || 0);
+                            document.getElementById('diffMain').innerText = Math.abs(data.QtyDiff);
+                            document.getElementById('costMain').innerText =  parseFloat(data.CostDiff).toFixed(2);
+                            document.getElementById('totalCostVariance').innerText = parseFloat(parseFloat(localStorage.getItem('addcostVari')) + parseFloat(localStorage.getItem('costVari'))).toFixed(2);
+
+                            document.getElementById('reportData').innerText = 'Total Lost Items: ' +  Math.abs(data.QtyDiff)  + ' ••••• Total Estimated Loss: ' +   parseFloat(data.CostDiff).toFixed(2);
+                            totalMissingItems = data.QtyDiff;
+                            totalEstLost = data.CostDiff;
+                           
+                        }else{
+                            console.log('No data available');
+                        }
+                }
+            }, (error)=>{
+                console.log('Error getting data...',error);
+                
+            });
+        }
+
+        export async function getTotals(location,DiffRef){
+
+            get(ref(database,`locations/${location}`)).then((snapshot)=>{
+                if(snapshot.exists()){
+                    const data = snapshot.val();
+                   
+                    let Qty =0, Cost =0;
+                    for (const itemID in data.Items) {
+                        const item = data.Items[itemID];
+                        if(item.Count && item.Count != item.OnHand){
+                            Qty += (parseFloat(item.Count) - parseFloat(item.OnHand));
+                            Cost += parseFloat(item.Cost) * (parseFloat(item.Count) - parseFloat(item.OnHand));
+                           
+                        }
+                    }
+                    localStorage.setItem('costVari',  parseFloat(Cost).toFixed(2) || 0);
+                    document.getElementById('diffMain').innerText = Math.abs(Qty);
+                    document.getElementById('costMain').innerText =  parseFloat(Cost).toFixed(2);
+                    document.getElementById('totalCostVariance').innerText = parseFloat(parseFloat(localStorage.getItem('addcostVari')) + parseFloat(localStorage.getItem('costVari'))).toFixed(2);
+                           
+                    document.getElementById('reportData').innerText = 'Total Lost Items: ' +  Math.abs(Qty)  + ' ••••• Total Estimated Loss: ' + parseFloat(Cost).toFixed(2);
+                    update(DiffRef, {QtyDiff:Qty, CostDiff : Cost})
+                        .then(()=>{console.log('Difference updated')})
+                        .catch((error)=> {console.error('Error updating data: ',error)});
+
+                    
+                }
+            })
+        }
+
+        export async function getJsonData(location){
+            let jsonData=[];
+            get(ref(database,`locations/${location}`)).then((snapshot)=>{
+                if(snapshot.exists()){
+                    const data = snapshot.val();
+                     for (const itemID in data.Items) {
+                        const item = data.Items[itemID];
+                        
+                        if(item.Count && item.Count != item.OnHand){
+                            jsonData.push({
+                                "item_id" : itemID,
+                                "stocklocation_id": location,
+                                // "name": item.ItemDesc, 
+                                // "item_id": itemID,
+                                // "costprice" : item.Cost,
+                                "stockbin_id": -1,
+                                "quantity": 0,
+                                "real_quantity_in" : 0,
+                                "note": "Inventory count update",
+                                "is_stock_take": true
+                                
+                            });
+                        }
+                    }
+                }
+            });
+
+            get(ref(database,`locations/${location}/ExtraItems`)).then((snapshot)=>{
+                if(snapshot.exists()){
+                    const data = snapshot.val();
+                     for (const itemID in data.Items) {
+                        const item = data.Items[itemID];
+                        
+                        if(item.Count && item.Count != item.OnHand){
+                            jsonData.push({
+                                "item_id": itemID,
+                                "stocklocation_id": location,
+                                "stockbin_id": 0,
+                                "quantity_in": item.Count - item.OnHand,
+                                "real_quantity_in": item.Count - item.OnHand,
+                                "note": "Inventory count update",
+                                "is_stock_take": true
+                            });
+                        }
+                    }
+                }
+            });
+
+            return jsonData;
+        }
+
+        export async function checkItemExists(location,itemId) {
+
+            console.log("Location ",location, "Item ",itemId);
+            try {
+                const snapshot = await get(ref(database, `locations/${location}/Items/${itemId}`));
+                const checkExtra = await get(ref(database, `locations/${location}/ExtraItems/Items/${itemId}`));
+                if(snapshot.exists() || checkExtra.exists()){return true}else{return false}
+            } catch (error) {
+                console.error('Error checking item existence:', error);
+                return false;
+            }
+        }
+
+        export async function saveNewItemToDb(){
+            const table = document.getElementById('itemDetailsBody');
+            const rows = table.getElementsByTagName('tr');
+        
+             for (let i = 0; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+              
+                if (cells.length > 0) {
+                    const itemId = cells[0].innerText;
+                    const name = cells[1].innerText;
+                    const sku = cells[2].innerText;
+                    const price = cells[3].innerText;
+                    const quantityInput = cells[4].querySelector('input[type="number"]');
+                    const quantity = quantityInput ? quantityInput.value : 0; 
+                    const location = localStorage.getItem('locationCode');
+                  
+                    const itemData = {
+                        Cost : price,
+                        Count : quantity,
+                        ItemDesc : name,
+                        OnHand : 0,
+                        SKU: sku
+                    };
+                    
+                    try {
+                        set(ref(database, `locations/${location}/ExtraItems/Items/${itemId}`), itemData)
+                        .then(() => {
+                            console.log(`Item ${itemId} saved successfully.`);
+                        })
+                        .catch((error) => {
+                            console.error('Error saving item:', error);
+                         });
+                    } catch (error) {
+                        console.error('Error saving item:', error);
+                    }
+                   
+                }
+            }
+
+           updateQtyPrice();    
+           getAllAddItems();
+        }
+
+        export async function updateQtyPrice(){
+           let location = localStorage.getItem('locationCode');
+            var totalItems =0, totalCost = 0;
+            get(ref(database,`locations/${location}/ExtraItems/Items`)).then((snapshot)=>{
+                if(snapshot.exists()){
+                    const data = snapshot.val();
+                    const items = Object.values(data);
+                    items.forEach((item) => {
+                        console.log(item);
+                        totalItems += parseInt(item.Count) ;
+                        totalCost += parseFloat(item.Count * item.Cost);
+                    });
+                    
+                    setTimeout(() => {
+                        console.log("total Items: ", totalItems , " Cost: ", totalCost);
+
+                        localStorage.setItem('addcostVari', parseFloat(totalCost).toFixed(2) || 0);
+                        document.getElementById('totalCostVariance').innerText = parseFloat(parseFloat(localStorage.getItem('addcostVari')) + parseFloat(localStorage.getItem('costVari'))).toFixed(2);
+
+                        document.getElementById('diffAdd').innerText = totalItems;
+                        document.getElementById('costAdd').innerText =  parseFloat(totalCost).toFixed(2);
+
+                        let path = ref(database,`locations/${location}/ExtraItems`);
+                        update(path, {totalItems : totalItems , totalCost : totalCost})
+                        .then(()=>{console.log('count updated')})
+                        .catch((error)=> {console.error('Error updating data: ',error)});
+                    }, 2000);
+                   
+                    
+                }
+            });
+        }
+
+        export async function getAllAddItems(){
+
+            let location = localStorage.getItem('locationCode');
+
+            const path = ref(database,`locations/${location}/ExtraItems/Items`);
+            let count=0;
+
+           get(path).then((snapshot) => {
+                if(snapshot.exists()){
+                   
+                    const data = snapshot.val();
+                    const locationName = localStorage.getItem('location');
+                    const tableBody = document.getElementById('addtItemTable');
+                    while (tableBody.firstChild) {
+                        tableBody.removeChild(tableBody.firstChild);
+                    }
+                    for(const key in data){
+                        count++;
+                        if(data.hasOwnProperty(key)){
+                            console.log('key ', key, ' Value', data[key]);
+                        let item = data[key];
+                        const newRow = document.createElement('tr');
+                        newRow.style.textAlign ='left';
+                        newRow.style.borderBottom = '1px dotted rgb(155, 155, 155)';
+                        newRow.classList.add('itemRow');
+                        newRow.setAttribute('data-location-id',location)
+                        newRow.innerHTML = `
+                           
+                                <td class="no-print"> ${key} </td>
+                                <td style="text-align: left;"> ${item.ItemDesc} - ${locationName} </td>
+                                <td style="text-align: left;"> ${item.SKU} </td>
+                                <td  id='onhand-${key}-${location}' > ${item.OnHand} </td>
+                                <td style="color: transparent; " class="magic"> <input type="number" class="addInput" id='input-${key}-${location}'  onchange="updateCount('${key}', '${location}', this.value)"   style="width: 50px;" min="0" value='${item.Count}' required/> ${parseInt(item.Count)} </td>
+                                <td style="text-align: right;"  id='diff-${key}-${location}' >    ${parseInt(item.Count) - parseInt(item.OnHand)} </td>
+                                <td style="text-align: right;"  data-cost = ${item.Cost}  id='cost-${key}-${location}' >
+                                     ${ (parseInt(item.Count) - parseInt(item.OnHand)) * parseFloat(item.Cost)}
+                                </td>
+                           
+                        `;
+                        tableBody.appendChild(newRow);
+                       
+                       
+                       
+                        }
+                    }
+
+                    get(ref(database,`locations/${location}/ExtraItems`)).then((snapshot)=>{
+                        if(snapshot.exists()){
+                            let data = snapshot.val();
+                            console.log(data.totalCost , data.totalItems , count);
+
+                            localStorage.setItem('addcostVari', parseFloat(data.totalCost).toFixed(2) || 0);
+                            document.getElementById('totalCostVariance').innerText = parseFloat(parseFloat(localStorage.getItem('addcostVari')) + parseFloat(localStorage.getItem('costVari'))).toFixed(2);
+                            document.getElementById('diffAdd').innerText = Math.abs(data.totalItems);
+                            document.getElementById('costAdd').innerText =  parseFloat(data.totalCost).toFixed(2);
+                          
+                            document.getElementById('addRowCount').innerText = count;
+                            if(count > 0){
+                                document.getElementById('addTableContent').classList.remove('no-print');
+                            }
+
+                            // document.getElementById('addReportData').innerText = ' Total Extra Items: ' + data.totalItems + ' ••••• Total Value: ' + parseFloat(data.totalCost).toFixed(2);
+                        }
+                    });
+                   
+                }
+            })
+           
+        }
+        
+        export function updateCount(key,location,value){
+            const newCount = parseInt(value) || 0;
+             document.getElementById(`diff-${key}-${location}`).innerText = newCount;
+             let a = document.getElementById(`cost-${key}-${location}`);
+             a.innerText =  parseFloat(a.getAttribute('data-cost')) * newCount;
+
+
+            let path = ref(database,`locations/${location}/ExtraItems/Items/${key}`);
+            
+            update(path, {Count: newCount})
+            .then(()=>{console.log('count updated'); updateQtyPrice();})
+            .catch((error)=> {console.error('Error updating data: ',error)});   
+ 
+        }
+
+        window.updateCount = updateCount;
+        window.getAllAddItems = getAllAddItems;
+        window.updateQtyPrice = updateQtyPrice;
+        window.getCountDiff = getCountDiff;
+        window.checkItemExists = checkItemExists;
+        window.updateFirebaseOnFileUpload =updateFirebaseOnFileUpload;
+        window.updateDifferenceOnFileUpload = updateDifferenceOnFileUpload;
+        window.getJsonData = getJsonData;
+        window.saveNewItemToDb = saveNewItemToDb;
+
+        
 
         const inputElements = document.querySelectorAll('input[type="number"]');
 
         inputElements.forEach(input => {
             input.addEventListener('change', function(event) {
 
-                document.getElementById((event.target.id).replace('input','diff')).innerText = event.target.value - document.getElementById((event.target.id).replace('input','onhand')).innerText;
-                
+            document.getElementById('diff').classList.remove('hidden');
+            document.getElementById('cost').classList.remove('hidden');
+
+            var difference = document.getElementById((event.target.id).replace('input','diff'));
+            var onHand = document.getElementById((event.target.id).replace('input','onhand')).innerText;
+            var countValue = event.target.value;
+            var cost = document.getElementById((event.target.id).replace('input','cost'));
+            
+          
+            const splitData = (event.target.id).split("-");
+            
+            getCountDiff(splitData[2]);
+           
+            const locationRef = ref(database, `locations/${splitData[2]}/Items/${splitData[1]}`);
+
+            const DiffRef = ref(database, `locations/${splitData[2]}`);
+
+            
+
+            update(locationRef, {Count: event.target.value})
+            .then(()=>{console.log('count updated')})
+            .catch((error)=> {console.error('Error updating data: ',error)});
+
+            getTotals(splitData[2],DiffRef);
+           
+            setTimeout(function() {   
+                if(!difference.innerText){
+                    if((countValue - onHand)< 0){
+                        difference.innerText = countValue - onHand;
+                        cost.innerText = parseFloat(cost.dataset.cost * difference.innerText).toFixed(2);
+
+                        totalMissingItems+= parseFloat(difference.innerText);
+                        totalEstLost += parseFloat(cost.innerText);
+
+                        difference.classList.add('flash-red');
+                        cost.classList.add('flash-red');
+                        setTimeout(() => {
+                            difference.classList.remove('flash-red');
+                            cost.classList.remove('flash-red');
+                        }, 2000);
+
+                        
+                        }
+                    else
+                        {
+                        difference.innerText = countValue - onHand;
+                        cost.innerText = parseFloat(cost.dataset.cost * difference.innerText).toFixed(2);
+
+                        totalMissingItems-= parseFloat(difference.innerText);
+                        totalEstLost -= parseFloat(cost.innerText);
+
+                        difference.classList.add('flash-green');
+                        cost.classList.add('flash-green');
+                        setTimeout(() => {
+                            difference.classList.remove('flash-green');
+                            cost.classList.remove('flash-green');
+                        }, 2000);
+                        
+                        }
+                }else{
+                    if((countValue - onHand)< 0){
+
+                            totalMissingItems+= parseFloat(difference.innerText);
+                            totalEstLost += parseFloat(cost.innerText);
+
+                          
+                            difference.innerText = countValue - onHand;
+                            cost.innerText = parseFloat(cost.dataset.cost * difference.innerText).toFixed(2);
+
+                            difference.classList.add('flash-red');
+                            cost.classList.add('flash-red');
+                            setTimeout(() => {
+                                difference.classList.remove('flash-red');
+                                cost.classList.remove('flash-red');
+                            }, 2000);
+
+                            
+                            }
+                    else
+                            {
+                            
+                            totalMissingItems-= parseFloat(difference.innerText);
+                            totalEstLost -= parseFloat(cost.innerText);
+
+                          
+
+                            difference.innerText = countValue - onHand;
+                            cost.innerText = parseFloat(cost.dataset.cost * difference.innerText).toFixed(2);
+
+                            difference.classList.add('flash-green');
+                            cost.classList.add('flash-green');
+                            setTimeout(() => {
+                                difference.classList.remove('flash-green');
+                                cost.classList.remove('flash-green');
+                            }, 2000);
+
+
+                            
+                            }
+                }
+            },1000);
             });
         });
 
