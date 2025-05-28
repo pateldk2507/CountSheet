@@ -737,10 +737,11 @@
         </script>
         <script type="module">
         // Import the Firebase modules
+        require('dotenv').config();
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
         import { getDatabase, ref, set, update, onValue, get } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
         const firebaseConfig = {
-            apiKey: "AIzaSyBXdAmIp2xkXKYA_aUsJ00mmYMC9EfJIvw",
+            apiKey: process.env.API_KEY,
             authDomain: "dashboard-it-3aa1e.firebaseapp.com",
             databaseURL: "https://dashboard-it-3aa1e-default-rtdb.firebaseio.com",
             projectId: "dashboard-it-3aa1e",

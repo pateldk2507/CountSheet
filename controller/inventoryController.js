@@ -2,9 +2,10 @@ const {initializeApp} = require("firebase/compat/app");
 const { getDatabase, ref, child, get, set, update , remove} = require("firebase/database");
 const axios = require('axios');
 const { getAccessToken } = require('../utils/UtilData'); 
+require('dotenv').config();
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBXdAmIp2xkXKYA_aUsJ00mmYMC9EfJIvw",
+    apiKey: process.env.API_KEY,
     authDomain: "dashboard-it-3aa1e.firebaseapp.com",
     databaseURL: "https://dashboard-it-3aa1e-default-rtdb.firebaseio.com",
     projectId: "dashboard-it-3aa1e",
