@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <title>Packing Slip</title>
+</head>
+
+<style>
+      body {
+            padding: 20px;
+            font-family: Arial, Helvetica, sans-serif;
+            color: black;
+            background-color: #f0f0f0;
+            font-size: small !important;
+        }
+        @media print {
+            .no-print {
+                display: none;
+            }
+            .container{
+                width: 100%;
+            }
+        }
+        .section-title {
+            background-color: #cccccc;
+            color: rgb(0, 0, 0);
+            padding: 5px;
+            font-weight: bold;
+        }
+        .bordered-table th, .bordered-table td {
+            border: 1px solid #ddd;
+        }
+        .footer {
+            font-size: 12px;
+            text-align: center;
+            margin-top: 20px;
+        }
+</style>
+<body>
+
+    <!-- <div class="container">
+
+        <div class="row" style="border-bottom: 1px solid black;">
+            <div class="col">
+                <img src="https://teleco.ca/wp-content/uploads/2021/07/TELECO-Logo-Large.png" height="50" width="50">
+            </div>
+            <div class="col">
+                <h4>Packing Slip</h4>
+            </div>
+            <div class="col">
+                <ul>
+
+                    <% const today = new Date(); %>
+
+                    <li>Date: <%= today.toLocaleDateString() %> </li>
+                    <li id="so"> </li>
+                    <li>Ship Via:  Purolator Ground </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 30px; border-bottom: 1px solid black;">
+            <div class="col">
+                <div>
+                    <p><b>Sold To:</b></p>
+                   <address id="soldto">
+
+                   </address>
+                </div>
+            </div>
+            <div class="col">
+                <div>
+                    <p><b>Ship To:</b></p>
+                    <address  id="shipto">
+
+                    </address>
+                </div>
+            </div>
+        </div>
+
+        <center><h5 id="stitle" style="margin-top: 5px;"></h5></center>
+
+        <table class=".table-striped" style="width: 100%;border: 0px solid rgb(155, 155, 155); text-align: left; padding: 5px;" id="data-table">
+
+            <thead style="border-bottom: 1px dotted rgb(155, 155, 155);">
+                <th style="width: 15%;" >Item ID</th>
+                <th style="width: 65%;" >Item Description</th>
+                <th style="width: 10%;" >QTY Ordered</th>
+                <th style="width: 10%;">QTY Shipped</th>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+
+        <center>-----End of Items-----</center>
+        <center> <small>Thank you for your order.  The above items have been sold by us to your company on the basis of a legally binding order. An invoice detailing your order will follow shortly from our Finance team to yours for the above amount.  Should you have any questions regarding this order, please feel free to contact us at any time.</small> </center>
+    </div> -->
+
+    <div class="container mt-4" id="packing-slip" style="background-color: white;padding: 15px;border-radius: 10px;">
+        <!-- Company Information -->
+        <div class="row">
+            <div class="col-md-8">
+                <h3 class="font-weight-bold">TELECO</h3>
+                1218 Amber Dr,Thunder Bay<br>
+                Phone: 807-345-2900<br>
+            </div>
+            <div class="col-md-4 text-right">
+                <h2 class="text-primary">PACKING SLIP</h2>
+                <p><strong>Date:</strong> <span id="date"></span> <br>
+                <strong>Sales Order:</strong> <span id="so"></span></p>
+            </div>
+        </div>
+
+        <!-- Billing and Shipping Information -->
+        <div class="row mt-2">
+            <div class="col">
+                <table>
+                    <tr>
+                        <th>Bill To</th>
+                        <th style="padding-left: 30px;" >Ship To</th>
+                    </tr>
+                    <tr>
+                        <td> <span id="soldto" > </span></td>
+                        <td> <span id="shipto" style="padding-left: 30px;" ></span> </td>
+                    </tr>
+                </table>
+                
+            </div>
+        </div>
+
+        <h5 id="stitle" class="text-center mt-3"></h5>
+
+        <!-- Item List Table -->
+        <table class="table table-sm mt-3 bordered-table">
+            <thead class="thead-light">
+                <tr>
+                    <th>Item #</th>
+                    <th>Description</th>
+                    <th>Order Qty</th>
+                    <th>Ship Qty</th>
+                </tr>
+            </thead>
+            <tbody id="data-table">
+               
+            </tbody>
+        </table>
+
+        <!-- Footer -->
+        <div class="footer">
+         
+            <p>Thank You For Your Business!</p>
+        </div>
+    </div>
+
+    <!-- Print Button -->
+    <div class="container text-right no-print mt-3">
+        <button class="btn btn-primary" onclick="printPackingSlip()">Print Packing Slip</button>
+    </div>
+
+    <!-- Show loading modal -->
+      
+    <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-body">
+                <p> Getting the data....</p>
+                <div class="spinner-border text-success" role="status">  
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+</body>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+
+function openModal() {
+        $('#staticBackdrop').modal('show');
+    }
+
+    function closeModal() {
+        $('#staticBackdrop').modal('hide');
+    }
+
+
+var userInput = prompt("Enter Sales order Number: ");
+
+if(userInput != null){
+    openModal();
+    getData(userInput);
+}else{
+    alert('You cancelled input!!');
+}
+
+let date = new Date();
+
+
+  
+
+document.getElementById('date').innerText = date.toLocaleDateString("en-US", {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+function printPackingSlip() {
+            window.print();
+        }
+
+function getData(salesorder){
+    let table = document.getElementById('data-table');
+
+    fetch('/packingslip/data?salesorder='+salesorder)
+    .then(response => response.json())
+    .then(data =>{
+        console.log(data);
+        closeModal();
+        const addressLines = [
+            data.data.client_name ? data.data.client_name : '',
+            data.data.deladdress1 ? data.data.deladdress1 : '',
+            data.data.deladdress2 ? data.data.deladdress2 : '',
+            data.data.deladdress3 ? data.data.deladdress3 : '',
+            data.data.deladdress4 ? data.data.deladdress4 : '',
+            data.data.deladdress5 ? data.data.deladdress5 : ''
+        ].filter(line => line).join('\n');
+
+        document.getElementById('shipto').innerText =  addressLines;
+
+        document.getElementById('soldto').innerText = addressLines;
+
+        document.getElementById('so').innerText =  data.data.id;
+
+        document.getElementById('stitle').innerText = data.data.title;
+
+        data.data.lines.forEach(element => {
+
+            if(!element.isgroupdesc && !(element.productcode).includes('LBR-') && !(element.name).includes('Shipping') && !(element.name).includes('Discount')){
+                table.innerHTML += `<tr>
+                                        <td style="width: 15%;  border-bottom: 1px dotted rgb(155, 155, 155);">${element.productcode ? element.productcode.split(" | ")[0] : 'N/A'}</td>
+                                        <td style="width: 65%;  border-bottom: 1px dotted rgb(155, 155, 155);">${element.name}</td>
+                                        <td style="width: 10%;  border-bottom: 1px dotted rgb(155, 155, 155);text-align:center ">${element.quantity}</td>
+                                        <td style="width: 10%;  border-bottom: 1px dotted rgb(155, 155, 155);"></td>
+                                </tr>`;
+
+            }
+            
+        })
+        
+    });
+}
+
+
+
+</script>
+
+</html>

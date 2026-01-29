@@ -1,0 +1,241 @@
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Current Week</title>
+      <link rel="stylesheet" href="../public/assets/css/bootstrap.css">
+      <style>
+          table {
+              border-collapse: collapse;
+              width: 100%;
+          }
+          th, td {
+             
+              text-align: center;
+            
+              text-align: -webkit-center;
+              padding-left: 6px;
+          }
+          th {
+              background-color: #000000;
+              color:#5eff50 ;
+              font-size: 14px;
+          }
+
+          div{
+              margin-bottom: 10px;
+              padding: 5px;
+              border-radius: 10px;
+              border: 1px outset;
+              -webkit-box-shadow: 5px 1px 1px rgb(0 27 125);
+              color: white;
+              /* border-bottom: 1px solid; */
+              height: 180px;
+              width: 255px;
+              text-align: left;
+              font-size: 12px;
+              list-style: decimal;
+              overflow: hidden;
+          }
+          body{
+              background-color: black;
+              color: white;
+              font-family: Verdana, Geneva, Tahoma, sans-serif ;
+              /* overflow: hidden; */
+          }
+
+          .weekends{
+                /* display: none; */
+              width: 200px;
+              height: 180px;
+          }
+          p{
+              float: left;
+              writing-mode: tb;
+              text-orientation: upright;
+              /* margin-left: -14px; */
+              height: 180px;
+              margin-right: 3px;
+             margin-left: 0px;
+          }
+          ::-webkit-scrollbar {
+                  width: 10px; 
+              }            
+              ::-webkit-scrollbar-track {
+                  background: #f1f1f1; 
+              }
+              ::-webkit-scrollbar-thumb {
+                  background: #5f6169; 
+                  border-radius: 0px; 
+              }            
+              ::-webkit-scrollbar-thumb:hover {
+                  background: #ccc; 
+              }
+              html {
+                  scroll-behavior: smooth; 
+              }
+
+      </style>
+
+
+      <script>
+
+
+          setInterval(function() {
+              saveScrollPosition();
+              window.location.reload();
+          }, 60000); 
+
+
+          console.log(window.screen.availWidth);
+          
+
+
+          var weeklyData =  <%- JSON.stringify(weeklyData) %>;
+          var Agent = <%- JSON.stringify(Agent) %>;
+          console.log(weeklyData);
+
+      </script>
+  </head>
+  <body>
+
+  
+  <script>let dateonhead = new Date();  </script>
+
+  <h5  style="text-align: center; font-size: 20px;margin: 0;margin-bottom: 5px; color: red;"> 
+      Today: <script> document.write(dateonhead.toISOString().slice(0,10));
+              var d = new Date().toLocaleTimeString([], {timeStyle: 'short'}); 
+              document.write("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "+d);  
+              </script>   
+  </h5>
+
+
+
+  <table>
+
+    <tr id="heading"></tr>
+    <tr id="weekDataRow">
+
+    </tr>
+      <!-- This JavaScript code will populate the dates -->
+      <script>
+          var today = new Date();
+          var day = today.getDay();
+
+
+          var diff = today.getDate() - day + (day == 0 ? -6:1); 
+          var weekStart = new Date(today.setDate(diff));
+
+          var heading = document.getElementById('heading');
+          var weekDataRow = document.getElementById('weekDataRow');
+
+          // add agent id below to add new agnet in list;
+          const  newAgentList = [24,36,27,28,22]; 
+
+          var agents_color = [];
+          agents_color[24] = '#FFFF80';
+          agents_color[36] = '#15F5BA';
+          agents_color[27] = '#DCFFB7';
+          agents_color[28] = '#00bcd4';
+          agents_color[22] = '#C0FEFC';
+
+
+          for (var i = 0; i < 7; i++) {
+              var date = new Date();
+              date.setDate(date.getDate() + i);
+              const headingWeek = document.getElementById('Week');
+
+              console.log(date.getDay());
+              
+              if(date.getDay() == 6 || date.getDay() == 0){
+                // heading.innerHTML += "<th class='weekends'>" + date.toLocaleDateString("en-US", {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + "</th>";
+              }else{
+                heading.innerHTML += "<th>" + date.toLocaleDateString("en-US", {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + "</th>";
+              }
+              const tabledata = document.createElement('td');
+
+
+
+              for (let index = 0; index < newAgentList.length; index++) {
+                  const newDiv = document.createElement('div');
+                  const newP = document.createElement('p');
+
+
+
+                  newDiv.id = 'a' + date.getDate() + newAgentList[index];
+               
+                  newDiv.style.borderColor = agents_color[newAgentList[index]];
+                  newDiv.style.color = agents_color[newAgentList[index]];
+                  newDiv.style.boxShadow = '1px 1px 0px 0px' + agents_color[newAgentList[index]];
+                  
+                  if(i==0){
+                      var fname = Agent[newAgentList[index]].split(" ");
+                      newP.innerText = fname[0];
+                      tabledata.append(newP);
+                  }
+
+
+                  if(date.getDay() == 6 || date.getDay() == 0){
+                      newDiv.classList = 'weekends';
+                    //   tabledata.classList = 'weekends';
+                  }
+
+                  tabledata.append(newDiv);
+              }
+
+                  weekDataRow.append(tabledata);
+
+          }
+
+          var divs=[];
+
+
+             weeklyData.forEach(element => {
+                      var start_date = new Date(element.start_date+'Z');
+                      var end_date = new Date(element.end_date + 'Z');
+                      let options = { timeStyle: 'short', hour12: true};
+
+                      if(newAgentList.includes(element.agent_id)){
+
+                          document.addEventListener("DOMContentLoaded", function() {
+                              var id = 'a' + start_date.getDate() + element.agent_id;
+                              const getDiv = document.getElementById(id);
+
+                              if(element.is_prive == false || element.ticket_id !=0){
+                                  getDiv.innerHTML += "<li class='content'> <span style='color:red'> Ticket#" + element.ticket_id + "</span> " + element.client_name +  "-" +  element.site_name + "-" + element.subject +" <span style='color:red'>" + (end_date.getHours() - start_date.getHours()) + " hrs </span> <span style='color: #00FF00'> From: " + start_date.toLocaleTimeString('en-US', options) +" to "+ end_date.toLocaleTimeString('en-US', options)  + "</li> <br>" ;
+                              }
+
+                              const divElements = document.querySelectorAll('div');
+                              const divsWithIdStartingWithA = Array.from(divElements).filter(div => div.id.startsWith('a'));
+
+                              for (let index = 0; index < divsWithIdStartingWithA.length; index++) {
+                                if(divsWithIdStartingWithA[index].scrollHeight > 129){
+                                    divs.push(divsWithIdStartingWithA[index]);
+                                }
+                              }
+                          });
+                      }
+
+                  });
+
+        
+
+              function updateScroll() {
+                  divs.forEach(item => {
+                    
+                      item.scrollTop += 1;
+                      if ((item.scrollTop) >= item.scrollHeight - item.clientHeight) {
+                          item.scrollTop = 0;
+                      }
+              });
+          }
+          setInterval(updateScroll, 1500);
+
+
+      </script>
+
+  </table>
+
+  </body>
+  </html>

@@ -1,0 +1,2 @@
+2025-11-03T21:32:16.800Z - ❌ Error updating non-serialized item 2407: Request failed with status code 400
+2025-11-03T21:32:17.618Z - ✅ Serialized item 4170 deleted assets: 48985,48986,48987

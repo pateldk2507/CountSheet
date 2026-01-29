@@ -1,0 +1,224 @@
+2025-11-03T23:18:52.755Z - ❌ Error updating non-serialized item 207: Request failed with status code 400
+2025-11-03T23:18:52.838Z - ❌ Error updating non-serialized item 256: Request failed with status code 400
+2025-11-03T23:18:52.985Z - ❌ Error updating non-serialized item 319: Request failed with status code 400
+2025-11-03T23:18:52.986Z - ⚠️ No assets to delete for serialized item 390
+2025-11-03T23:18:53.085Z - ❌ Error updating non-serialized item 663: Request failed with status code 400
+2025-11-03T23:18:53.246Z - ✅ Non-serialized item 1061 updated successfully.
+2025-11-03T23:18:54.072Z - ✅ Non-serialized item 1063 updated successfully.
+2025-11-03T23:18:54.798Z - ✅ Non-serialized item 1067 updated successfully.
+2025-11-03T23:18:55.519Z - ✅ Non-serialized item 1071 updated successfully.
+2025-11-03T23:18:56.237Z - ✅ Non-serialized item 1074 updated successfully.
+2025-11-03T23:18:56.972Z - ✅ Non-serialized item 1079 updated successfully.
+2025-11-03T23:18:57.725Z - ✅ Non-serialized item 1083 updated successfully.
+2025-11-03T23:18:58.441Z - ✅ Non-serialized item 1086 updated successfully.
+2025-11-03T23:18:59.171Z - ✅ Non-serialized item 1087 updated successfully.
+2025-11-03T23:18:59.930Z - ✅ Non-serialized item 1091 updated successfully.
+2025-11-03T23:19:00.663Z - ✅ Non-serialized item 1092 updated successfully.
+2025-11-03T23:19:01.383Z - ✅ Non-serialized item 1095 updated successfully.
+2025-11-03T23:19:02.098Z - ✅ Non-serialized item 1096 updated successfully.
+2025-11-03T23:19:02.877Z - ✅ Non-serialized item 1097 updated successfully.
+2025-11-03T23:19:03.651Z - ✅ Non-serialized item 1102 updated successfully.
+2025-11-03T23:19:04.397Z - ✅ Non-serialized item 1105 updated successfully.
+2025-11-03T23:19:05.159Z - ✅ Non-serialized item 1115 updated successfully.
+2025-11-03T23:19:06.935Z - ✅ Serialized item 1120 deleted assets: 46965,46966
+2025-11-03T23:19:07.892Z - ✅ Serialized item 1130 deleted assets: 35171
+2025-11-03T23:19:08.979Z - ✅ Serialized item 1132 deleted assets: 35173
+2025-11-03T23:19:09.935Z - ✅ Serialized item 1139 deleted assets: 35199
+2025-11-03T23:19:10.635Z - ✅ Non-serialized item 1141 updated successfully.
+2025-11-03T23:19:12.281Z - ✅ Serialized item 1146 deleted assets: 35691,35692,48721,48723
+2025-11-03T23:19:13.277Z - ✅ Serialized item 1148 deleted assets: 46994
+2025-11-03T23:19:14.285Z - ✅ Serialized item 1156 deleted assets: 36457
+2025-11-03T23:19:15.025Z - ✅ Non-serialized item 1158 updated successfully.
+2025-11-03T23:19:15.746Z - ✅ Non-serialized item 1161 updated successfully.
+2025-11-03T23:19:16.474Z - ✅ Non-serialized item 1163 updated successfully.
+2025-11-03T23:19:17.218Z - ✅ Non-serialized item 1164 updated successfully.
+2025-11-03T23:19:17.930Z - ✅ Non-serialized item 1167 updated successfully.
+2025-11-03T23:19:18.712Z - ✅ Non-serialized item 1178 updated successfully.
+2025-11-03T23:19:19.434Z - ✅ Non-serialized item 1180 updated successfully.
+2025-11-03T23:19:20.163Z - ✅ Non-serialized item 1181 updated successfully.
+2025-11-03T23:19:20.953Z - ✅ Non-serialized item 1183 updated successfully.
+2025-11-03T23:19:21.677Z - ✅ Non-serialized item 1186 updated successfully.
+2025-11-03T23:19:22.393Z - ✅ Non-serialized item 1193 updated successfully.
+2025-11-03T23:19:23.399Z - ✅ Serialized item 1203 deleted assets: 6941
+2025-11-03T23:19:24.359Z - ✅ Serialized item 1204 deleted assets: 6945
+2025-11-03T23:19:25.127Z - ✅ Non-serialized item 1206 updated successfully.
+2025-11-03T23:19:26.394Z - ✅ Serialized item 1214 deleted assets: 47000,47001
+2025-11-03T23:19:27.112Z - ✅ Non-serialized item 1219 updated successfully.
+2025-11-03T23:19:27.866Z - ✅ Non-serialized item 1223 updated successfully.
+2025-11-03T23:19:28.837Z - ✅ Serialized item 1243 deleted assets: 35891
+2025-11-03T23:19:29.616Z - ✅ Non-serialized item 1247 updated successfully.
+2025-11-03T23:19:32.377Z - ✅ Serialized item 1251 deleted assets: 38247,38248,38249,38251,38252,38254,38255,38256
+2025-11-03T23:19:33.092Z - ✅ Non-serialized item 1265 updated successfully.
+2025-11-03T23:19:34.578Z - ✅ Serialized item 1266 deleted assets: 48480,48481,48482
+2025-11-03T23:19:35.309Z - ✅ Non-serialized item 1267 updated successfully.
+2025-11-03T23:19:36.247Z - ✅ Serialized item 1291 deleted assets: 46893
+2025-11-03T23:19:36.987Z - ✅ Non-serialized item 1315 updated successfully.
+2025-11-03T23:19:37.705Z - ✅ Non-serialized item 1318 updated successfully.
+2025-11-03T23:19:38.437Z - ✅ Non-serialized item 1333 updated successfully.
+2025-11-03T23:19:39.141Z - ✅ Non-serialized item 1350 updated successfully.
+2025-11-03T23:19:39.850Z - ✅ Non-serialized item 1367 updated successfully.
+2025-11-03T23:19:40.574Z - ✅ Non-serialized item 1377 updated successfully.
+2025-11-03T23:19:41.300Z - ✅ Non-serialized item 1381 updated successfully.
+2025-11-03T23:19:42.023Z - ✅ Non-serialized item 1388 updated successfully.
+2025-11-03T23:19:42.742Z - ✅ Non-serialized item 1389 updated successfully.
+2025-11-03T23:19:43.478Z - ✅ Non-serialized item 1438 updated successfully.
+2025-11-03T23:19:44.209Z - ✅ Non-serialized item 1444 updated successfully.
+2025-11-03T23:19:45.209Z - ✅ Serialized item 1456 deleted assets: 47012
+2025-11-03T23:19:45.933Z - ✅ Non-serialized item 1473 updated successfully.
+2025-11-03T23:19:46.645Z - ✅ Non-serialized item 1504 updated successfully.
+2025-11-03T23:19:47.383Z - ✅ Non-serialized item 1506 updated successfully.
+2025-11-03T23:19:48.119Z - ✅ Non-serialized item 1519 updated successfully.
+2025-11-03T23:19:48.845Z - ✅ Non-serialized item 1531 updated successfully.
+2025-11-03T23:19:49.914Z - ✅ Non-serialized item 1544 updated successfully.
+2025-11-03T23:19:51.052Z - ✅ Serialized item 1546 deleted assets: 48687
+2025-11-03T23:19:51.805Z - ✅ Non-serialized item 1570 updated successfully.
+2025-11-03T23:19:52.512Z - ✅ Non-serialized item 1589 updated successfully.
+2025-11-03T23:19:53.227Z - ✅ Non-serialized item 1610 updated successfully.
+2025-11-03T23:19:53.994Z - ✅ Non-serialized item 1621 updated successfully.
+2025-11-03T23:19:54.715Z - ✅ Non-serialized item 1636 updated successfully.
+2025-11-03T23:19:55.658Z - ✅ Serialized item 1644 deleted assets: 48449
+2025-11-03T23:19:56.387Z - ✅ Non-serialized item 1726 updated successfully.
+2025-11-03T23:19:57.102Z - ✅ Non-serialized item 1734 updated successfully.
+2025-11-03T23:19:57.823Z - ✅ Non-serialized item 1810 updated successfully.
+2025-11-03T23:19:58.534Z - ✅ Non-serialized item 1841 updated successfully.
+2025-11-03T23:19:59.244Z - ✅ Non-serialized item 1846 updated successfully.
+2025-11-03T23:19:59.988Z - ✅ Non-serialized item 1847 updated successfully.
+2025-11-03T23:20:00.744Z - ✅ Non-serialized item 1859 updated successfully.
+2025-11-03T23:20:01.725Z - ✅ Serialized item 1885 deleted assets: 45688
+2025-11-03T23:20:02.441Z - ✅ Non-serialized item 1888 updated successfully.
+2025-11-03T23:20:03.209Z - ✅ Non-serialized item 1934 updated successfully.
+2025-11-03T23:20:03.968Z - ✅ Non-serialized item 1937 updated successfully.
+2025-11-03T23:20:04.697Z - ✅ Non-serialized item 1950 updated successfully.
+2025-11-03T23:20:05.482Z - ✅ Non-serialized item 1951 updated successfully.
+2025-11-03T23:20:06.258Z - ✅ Non-serialized item 1989 updated successfully.
+2025-11-03T23:20:07.001Z - ✅ Non-serialized item 2012 updated successfully.
+2025-11-03T23:20:07.722Z - ✅ Non-serialized item 2013 updated successfully.
+2025-11-03T23:20:08.445Z - ✅ Non-serialized item 2014 updated successfully.
+2025-11-03T23:20:09.149Z - ✅ Non-serialized item 2047 updated successfully.
+2025-11-03T23:20:09.875Z - ✅ Non-serialized item 2074 updated successfully.
+2025-11-03T23:20:10.602Z - ✅ Non-serialized item 2075 updated successfully.
+2025-11-03T23:20:11.348Z - ✅ Non-serialized item 2088 updated successfully.
+2025-11-03T23:20:12.114Z - ✅ Non-serialized item 2101 updated successfully.
+2025-11-03T23:20:12.834Z - ✅ Non-serialized item 2107 updated successfully.
+2025-11-03T23:20:13.579Z - ✅ Non-serialized item 2109 updated successfully.
+2025-11-03T23:20:14.283Z - ✅ Non-serialized item 2115 updated successfully.
+2025-11-03T23:20:15.228Z - ✅ Serialized item 2116 deleted assets: 47428
+2025-11-03T23:20:16.290Z - ✅ Serialized item 2119 deleted assets: 48428
+2025-11-03T23:20:17.038Z - ✅ Non-serialized item 2174 updated successfully.
+2025-11-03T23:20:17.756Z - ✅ Non-serialized item 2180 updated successfully.
+2025-11-03T23:20:18.479Z - ✅ Non-serialized item 2228 updated successfully.
+2025-11-03T23:20:19.204Z - ✅ Non-serialized item 2430 updated successfully.
+2025-11-03T23:20:19.958Z - ✅ Non-serialized item 2519 updated successfully.
+2025-11-03T23:20:20.691Z - ✅ Non-serialized item 2528 updated successfully.
+2025-11-03T23:20:21.464Z - ✅ Non-serialized item 2530 updated successfully.
+2025-11-03T23:20:22.225Z - ✅ Non-serialized item 2546 updated successfully.
+2025-11-03T23:20:22.951Z - ✅ Non-serialized item 2561 updated successfully.
+2025-11-03T23:20:23.674Z - ✅ Non-serialized item 2595 updated successfully.
+2025-11-03T23:20:24.410Z - ✅ Non-serialized item 2777 updated successfully.
+2025-11-03T23:20:25.145Z - ✅ Non-serialized item 2829 updated successfully.
+2025-11-03T23:20:25.913Z - ✅ Non-serialized item 2847 updated successfully.
+2025-11-03T23:20:26.867Z - ✅ Serialized item 2859 deleted assets: 46508
+2025-11-03T23:20:28.572Z - ✅ Serialized item 2905 deleted assets: 46908,46909,46910,46911
+2025-11-03T23:20:29.368Z - ✅ Non-serialized item 2924 updated successfully.
+2025-11-03T23:20:30.086Z - ✅ Non-serialized item 2957 updated successfully.
+2025-11-03T23:20:30.886Z - ❌ Error updating non-serialized item 2980: Request failed with status code 400
+2025-11-03T23:20:31.028Z - ✅ Non-serialized item 2983 updated successfully.
+2025-11-03T23:20:31.790Z - ✅ Non-serialized item 2988 updated successfully.
+2025-11-03T23:20:32.516Z - ✅ Non-serialized item 3015 updated successfully.
+2025-11-03T23:20:33.235Z - ✅ Non-serialized item 3019 updated successfully.
+2025-11-03T23:20:33.950Z - ✅ Non-serialized item 3025 updated successfully.
+2025-11-03T23:20:34.662Z - ✅ Non-serialized item 3064 updated successfully.
+2025-11-03T23:20:35.406Z - ✅ Non-serialized item 3065 updated successfully.
+2025-11-03T23:20:36.138Z - ❌ Error updating non-serialized item 3089: Request failed with status code 400
+2025-11-03T23:20:36.260Z - ✅ Non-serialized item 3101 updated successfully.
+2025-11-03T23:20:37.044Z - ✅ Non-serialized item 3102 updated successfully.
+2025-11-03T23:20:37.822Z - ✅ Non-serialized item 3103 updated successfully.
+2025-11-03T23:20:38.545Z - ✅ Non-serialized item 3179 updated successfully.
+2025-11-03T23:20:39.301Z - ✅ Non-serialized item 3182 updated successfully.
+2025-11-03T23:20:40.043Z - ✅ Non-serialized item 3183 updated successfully.
+2025-11-03T23:20:40.772Z - ✅ Non-serialized item 3212 updated successfully.
+2025-11-03T23:20:41.530Z - ✅ Non-serialized item 3231 updated successfully.
+2025-11-03T23:20:42.362Z - ✅ Non-serialized item 3235 updated successfully.
+2025-11-03T23:20:43.123Z - ✅ Non-serialized item 3243 updated successfully.
+2025-11-03T23:20:43.871Z - ✅ Non-serialized item 3258 updated successfully.
+2025-11-03T23:20:44.601Z - ✅ Non-serialized item 3259 updated successfully.
+2025-11-03T23:20:45.316Z - ✅ Non-serialized item 3279 updated successfully.
+2025-11-03T23:20:46.037Z - ✅ Non-serialized item 3287 updated successfully.
+2025-11-03T23:20:46.776Z - ✅ Non-serialized item 3295 updated successfully.
+2025-11-03T23:20:47.486Z - ❌ Error updating non-serialized item 182: Request failed with status code 400
+2025-11-03T23:20:47.571Z - ❌ Error updating non-serialized item 237: Request failed with status code 400
+2025-11-03T23:20:47.673Z - ❌ Error updating non-serialized item 341: Request failed with status code 400
+2025-11-03T23:20:47.771Z - ❌ Error updating non-serialized item 394: Request failed with status code 400
+2025-11-03T23:20:47.858Z - ❌ Error updating non-serialized item 396: Request failed with status code 400
+2025-11-03T23:20:48.134Z - ❌ Error updating non-serialized item 408: Request failed with status code 400
+2025-11-03T23:20:48.234Z - ✅ Non-serialized item 442 updated successfully.
+2025-11-03T23:20:48.936Z - ❌ Error updating non-serialized item 471: Request failed with status code 400
+2025-11-03T23:20:49.039Z - ✅ Non-serialized item 508 updated successfully.
+2025-11-03T23:20:49.796Z - ✅ Non-serialized item 519 updated successfully.
+2025-11-03T23:20:50.495Z - ✅ Non-serialized item 552 updated successfully.
+2025-11-03T23:20:51.188Z - ❌ Error updating non-serialized item 556: Request failed with status code 400
+2025-11-03T23:20:51.296Z - ✅ Non-serialized item 640 updated successfully.
+2025-11-03T23:20:52.007Z - ✅ Non-serialized item 647 updated successfully.
+2025-11-03T23:20:52.786Z - ✅ Non-serialized item 655 updated successfully.
+2025-11-03T23:20:53.502Z - ✅ Non-serialized item 662 updated successfully.
+2025-11-03T23:20:54.226Z - ✅ Non-serialized item 759 updated successfully.
+2025-11-03T23:20:54.980Z - ✅ Non-serialized item 806 updated successfully.
+2025-11-03T23:20:55.692Z - ✅ Non-serialized item 808 updated successfully.
+2025-11-03T23:20:56.440Z - ✅ Non-serialized item 816 updated successfully.
+2025-11-03T23:20:57.155Z - ✅ Non-serialized item 850 updated successfully.
+2025-11-03T23:20:57.870Z - ✅ Non-serialized item 863 updated successfully.
+2025-11-03T23:20:58.584Z - ✅ Non-serialized item 884 updated successfully.
+2025-11-03T23:20:59.310Z - ✅ Non-serialized item 916 updated successfully.
+2025-11-03T23:21:00.000Z - ❌ Error updating non-serialized item 946: Request failed with status code 400
+2025-11-03T23:21:00.113Z - ❌ Error updating non-serialized item 951: Request failed with status code 400
+2025-11-03T23:21:00.237Z - ❌ Error updating non-serialized item 952: Request failed with status code 400
+2025-11-03T23:21:00.331Z - ❌ Error updating non-serialized item 1004: Request failed with status code 400
+2025-11-03T23:21:00.439Z - ✅ Non-serialized item 1044 updated successfully.
+2025-11-03T23:21:01.148Z - ✅ Non-serialized item 1085 updated successfully.
+2025-11-03T23:21:01.879Z - ✅ Non-serialized item 1094 updated successfully.
+2025-11-03T23:21:02.584Z - ❌ Error updating non-serialized item 1129: Request failed with status code 400
+2025-11-03T23:21:02.689Z - ✅ Non-serialized item 1135 updated successfully.
+2025-11-03T23:21:03.415Z - ✅ Non-serialized item 1162 updated successfully.
+2025-11-03T23:21:04.129Z - ✅ Non-serialized item 1175 updated successfully.
+2025-11-03T23:21:04.868Z - ✅ Non-serialized item 1176 updated successfully.
+2025-11-03T23:21:05.572Z - ❌ Error updating non-serialized item 1222: Request failed with status code 400
+2025-11-03T23:21:05.674Z - ❌ Error updating non-serialized item 1226: Request failed with status code 400
+2025-11-03T23:21:05.764Z - ❌ Error updating non-serialized item 1242: Request failed with status code 400
+2025-11-03T23:21:05.852Z - ❌ Error updating non-serialized item 1245: Request failed with status code 400
+2025-11-03T23:21:05.961Z - ✅ Non-serialized item 1250 updated successfully.
+2025-11-03T23:21:06.722Z - ✅ Non-serialized item 1345 updated successfully.
+2025-11-03T23:21:07.434Z - ✅ Non-serialized item 1361 updated successfully.
+2025-11-03T23:21:08.147Z - ✅ Non-serialized item 1372 updated successfully.
+2025-11-03T23:21:08.869Z - ❌ Error updating non-serialized item 1382: Request failed with status code 400
+2025-11-03T23:21:09.006Z - ✅ Non-serialized item 1383 updated successfully.
+2025-11-03T23:21:09.726Z - ❌ Error updating non-serialized item 1420: Request failed with status code 400
+2025-11-03T23:21:09.875Z - ✅ Non-serialized item 1571 updated successfully.
+2025-11-03T23:21:10.612Z - ✅ Non-serialized item 1794 updated successfully.
+2025-11-03T23:21:11.335Z - ✅ Non-serialized item 1959 updated successfully.
+2025-11-03T23:21:12.037Z - ❌ Error updating non-serialized item 2003: Request failed with status code 400
+2025-11-03T23:21:12.129Z - ❌ Error updating non-serialized item 2133: Request failed with status code 400
+2025-11-03T23:21:12.233Z - ✅ Non-serialized item 2162 updated successfully.
+2025-11-03T23:21:12.958Z - ✅ Non-serialized item 2245 updated successfully.
+2025-11-03T23:21:13.687Z - ✅ Non-serialized item 2549 updated successfully.
+2025-11-03T23:21:14.408Z - ✅ Non-serialized item 2550 updated successfully.
+2025-11-03T23:21:15.126Z - ✅ Non-serialized item 2800 updated successfully.
+2025-11-03T23:21:15.824Z - ❌ Error updating non-serialized item 2872: Request failed with status code 400
+2025-11-03T23:21:15.961Z - ✅ Non-serialized item 2920 updated successfully.
+2025-11-03T23:21:16.732Z - ✅ Non-serialized item 2943 updated successfully.
+2025-11-03T23:21:17.472Z - ✅ Non-serialized item 3017 updated successfully.
+2025-11-03T23:21:18.198Z - ✅ Non-serialized item 3045 updated successfully.
+2025-11-03T23:21:18.953Z - ✅ Non-serialized item 3133 updated successfully.
+2025-11-03T23:21:19.707Z - ✅ Non-serialized item 3156 updated successfully.
+2025-11-03T23:21:20.418Z - ✅ Non-serialized item 3215 updated successfully.
+2025-11-03T23:21:21.172Z - ✅ Non-serialized item 3229 updated successfully.
+2025-11-03T23:21:21.946Z - ✅ Non-serialized item 3376 updated successfully.
+2025-11-03T23:21:22.709Z - ✅ Non-serialized item 3499 updated successfully.
+2025-11-03T23:21:23.468Z - ✅ Non-serialized item 3627 updated successfully.
+2025-11-03T23:21:24.237Z - ✅ Non-serialized item 3646 updated successfully.
+2025-11-03T23:21:24.972Z - ✅ Non-serialized item 3799 updated successfully.
+2025-11-03T23:21:25.737Z - ✅ Non-serialized item 3840 updated successfully.
+2025-11-03T23:21:26.469Z - ✅ Non-serialized item 3954 updated successfully.
+2025-11-03T23:21:27.238Z - ✅ Non-serialized item 4046 updated successfully.
+2025-11-03T23:21:27.950Z - ✅ Non-serialized item 4068 updated successfully.
+2025-11-03T23:21:28.665Z - ✅ Non-serialized item 4069 updated successfully.
+2025-11-03T23:21:29.528Z - ✅ Non-serialized item 4190 updated successfully.

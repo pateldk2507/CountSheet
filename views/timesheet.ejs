@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Timesheet</title>
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .month-section {
+            margin-bottom: 30px;
+        }
+        .month-header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px 5px 0 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .timesheet-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 0 0 5px 5px;
+            overflow: hidden;
+        }
+        .timesheet-table thead {
+            background-color: #e9ecef;
+        }
+        .timesheet-table th {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #dee2e6;
+            font-weight: 600;
+        }
+        .timesheet-table td {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .timesheet-table tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+        .date-cell {
+            font-weight: 500;
+            min-width: 120px;
+        }
+        .hours-cell {
+            text-align: center;
+            font-weight: 500;
+        }
+        .low-hours {
+            background-color: #f8d7da;
+            color: #721c24;
+            font-weight: bold;
+        }
+        .normal-hours {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .no-data {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <h1>Timesheet Report</h1>
+        <hr>
+
+        <%
+            // Group data by month
+            const groupedByMonth = {};
+            let entriesArray = [];
+            
+            
+            if (data) {
+                if (Array.isArray(data.data)) {
+                    entriesArray = data.data;
+                } else if (Array.isArray(data)) {
+                    entriesArray = data;
+                } else if (data.data && Array.isArray(data.data.data)) {
+                    entriesArray = data.data.data;
+                }
+            }
+            
+            console.log('Entries array:', entriesArray);
+            console.log('Entries count:', entriesArray.length);
+            
+            entriesArray.forEach(entry => {
+                if (entry.date) {
+                    const date = new Date(entry.date);
+                    const monthKey = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+                    
+                    if (!groupedByMonth[monthKey]) {
+                        groupedByMonth[monthKey] = [];
+                    }
+                    groupedByMonth[monthKey].push(entry);
+                }
+            });
+        %>
+
+        <% if (Object.keys(groupedByMonth).length === 0) { %>
+            <div class="alert alert-info">
+                <strong>No timesheet data available</strong>
+            </div>
+        <% } else { %>
+            <% Object.keys(groupedByMonth).sort().forEach(month => { %>
+                <div class="month-section">
+                    <div class="month-header">
+                        <%= month %>
+                    </div>
+                    <table class="timesheet-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Agent Name</th>
+                                <th>Actual Hours</th>
+                                <th>Work Hours</th>
+                                <th>Target Hours</th>
+                                <th>Chargeable Hours</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% 
+                                // Sort entries by date
+                                groupedByMonth[month].sort((a,b) => new Date(a.date) - new Date(b.date));
+                                let prevWeekKey = null;
+                                groupedByMonth[month].forEach(entry => {
+                                    const d = new Date(entry.date);
+                                    const day = d.getDay(); // 0 = Sun, 6 = Sat
+
+                                    // Skip weekends
+                                    if (day === 0 || day === 6) return;
+
+                                    // Determine week start (Sunday) as week key
+                                    const weekStart = new Date(d);
+                                    weekStart.setHours(0,0,0,0);
+                                    weekStart.setDate(d.getDate() - d.getDay());
+                                    const weekKey = weekStart.toISOString().slice(0,10);
+
+                                    // Insert a spacer row when week changes
+                                    if (prevWeekKey && prevWeekKey !== weekKey) { %>
+                                        <tr><td colspan="6" style="height:18px;background:#f1f3f5"></td></tr>
+                                    <% }
+                                    prevWeekKey = weekKey;
+
+                                    const actualHours = parseFloat(entry.actual_hours) || 0;
+                                    const workHours = parseFloat(entry.work_hours) || 0;
+                                    const targetHours = parseFloat(entry.target_hours) || 0;
+                                    const chargeableHours = parseFloat(entry.chargeable_hours) || 0;
+                                    const isLowHours = actualHours < 8;
+                            %>
+                                <tr class="<%= isLowHours ? 'low-hours' : 'normal-hours' %>">
+                                    <td class="date-cell">
+                                        <%= d.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) %>
+                                    </td>
+                                    <td><%= entry.agent_name || 'N/A' %></td>
+                                    <td class="hours-cell">
+                                        <%= actualHours.toFixed(2) %> hrs
+                                        <% if (isLowHours) { %>
+                                            <span style="margin-left: 10px; font-size: 12px;">⚠️</span>
+                                        <% } %>
+                                    </td>
+                                    <td class="hours-cell"><%= workHours.toFixed(2) %> hrs</td>
+                                    <td class="hours-cell"><%= targetHours.toFixed(2) %> hrs</td>
+                                    <td class="hours-cell"><%= chargeableHours.toFixed(2) %> hrs</td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            <% }); %>
+        <% } %>
+    </div>
+</body>
+</html>

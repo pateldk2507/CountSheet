@@ -157,7 +157,7 @@
                     <% itemsArray.forEach(item => { %>
                         <tr class="itemRow" style="border-bottom: 1px dotted rgb(155, 155, 155);" data-location-id=<%= location.LocationID %>> 
                             <td class="no-print"><%= item.ItemID %></td>
-                            <td style="text-align: left;"><%= cleanData(item.ItemDesc) %> - <%= location.Location %></td>
+                            <td style="text-align: left;"><%= cleanData(item.ItemDesc) %>  <span class="no-print"> - <%= location.Location %> </span> </td>
                             <td style="text-align: left;"><%= cleanData(item.SKU) %></td>
                             <td id=<%='onhand-'+item.ItemID+'-'+location.LocationID %>><%= item.OnHand %></td>
                             <td style="color: transparent;" class="magic">
@@ -659,7 +659,13 @@
 
                                 document.getElementById('reportData').innerText = ' Total Lost Items: ' + totalMissingItems * -1 + ' ••••• Total Estimated Loss: ' + totalEstLost.toFixed(2);
                                 
+
+
                                 if(quantities[itemId] - onHand[itemId] != 0){
+
+                                    console.log("Qty Update", quantities[itemId] - onHand[itemId]);
+                                    
+
                                     jsonData.push({
                                                 "item_id": itemId,
                                                 "stocklocation_id": locationSelect.value,
@@ -737,11 +743,10 @@
         </script>
         <script type="module">
         // Import the Firebase modules
-        require('dotenv').config();
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
         import { getDatabase, ref, set, update, onValue, get } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
         const firebaseConfig = {
-            apiKey: process.env.API_KEY,
+            apiKey: "AIzaSyBXdAmIp2xkXKYA_aUsJ00mmYMC9EfJIvw",
             authDomain: "dashboard-it-3aa1e.firebaseapp.com",
             databaseURL: "https://dashboard-it-3aa1e-default-rtdb.firebaseio.com",
             projectId: "dashboard-it-3aa1e",
@@ -823,53 +828,90 @@
             })
         }
 
-        export async function getJsonData(location){
-            let jsonData=[];
-            get(ref(database,`locations/${location}`)).then((snapshot)=>{
-                if(snapshot.exists()){
-                    const data = snapshot.val();
-                     for (const itemID in data.Items) {
-                        const item = data.Items[itemID];
-                        
-                        if(item.Count && item.Count != item.OnHand){
-                            jsonData.push({
-                                "item_id" : itemID,
-                                "stocklocation_id": location,
-                                // "name": item.ItemDesc, 
-                                // "item_id": itemID,
-                                // "costprice" : item.Cost,
-                                "stockbin_id": -1,
-                                "quantity": 0,
-                                "real_quantity_in" : 0,
-                                "note": "Inventory count update",
-                                "is_stock_take": true
-                                
-                            });
-                        }
-                    }
-                }
-            });
+        async function getItemDetails(itemID) {
+            try {
+                // 1️⃣ Check if item is serialized
+                const itemRes = await fetch(`https://teleco.halopsa.com/api/item/${itemID}`);
+                const itemData = await itemRes.json();
 
-            get(ref(database,`locations/${location}/ExtraItems`)).then((snapshot)=>{
-                if(snapshot.exists()){
-                    const data = snapshot.val();
-                     for (const itemID in data.Items) {
-                        const item = data.Items[itemID];
-                        
-                        if(item.Count && item.Count != item.OnHand){
-                            jsonData.push({
-                                "item_id": itemID,
-                                "stocklocation_id": location,
-                                "stockbin_id": 0,
-                                "quantity_in": item.Count - item.OnHand,
-                                "real_quantity_in": item.Count - item.OnHand,
-                                "note": "Inventory count update",
-                                "is_stock_take": true
-                            });
-                        }
+                console.log(itemID + " " + itemData.asset_type_matching_field_name);
+                
+
+                const is_serial = itemData?.asset_type_matching_field_name === "Serial Number";
+                let asset_id = null;
+
+                // 2️⃣ If serialized, fetch first asset ID
+                if (is_serial) {
+                    const assetRes = await fetch(`https://teleco.halopsa.com/api/asset?item_id=${itemID}`);
+                    const assetData = await assetRes.json();
+
+                    if (assetData?.assets?.length > 0) {
+                        asset_id = assetData.assets[0].id;
                     }
                 }
-            });
+
+                return { is_serial, asset_id };
+            } catch (err) {
+                console.error(`Error while checking item ${itemID}:`, err);
+                console.log("not");
+                return { is_serial: false, asset_id: null };
+            }
+        }
+
+        export async function getJsonData(location) {
+            const jsonData = [];
+
+            // 1️⃣ Fetch data from Firebase
+            const mainSnap = await get(ref(database, `locations/${location}`));
+            const extraSnap = await get(ref(database, `locations/${location}/ExtraItems`));
+
+            // 2️⃣ Process main Items
+            if (mainSnap.exists()) {
+                const data = mainSnap.val();
+
+                for (const itemID in data.Items) {
+                    const item = data.Items[itemID];
+                    if (item.Count && item.Count !== item.OnHand) {
+                        const { is_serial, asset_id } = await getItemDetails(itemID);
+
+                        jsonData.push({
+                            item_id: itemID,
+                            stocklocation_id: location,
+                            stockbin_id: -1,
+                            quantity_in: item.Count - item.OnHand,
+                            real_quantity_in: item.Count - item.OnHand,
+                            note: "Inventory count update",
+                            is_stock_take: true,
+                            is_serial,
+                            asset_id,
+                        });
+                    }
+                }
+            }
+
+            // 3️⃣ Process ExtraItems
+            if (extraSnap.exists()) {
+                const data = extraSnap.val();
+
+                for (const itemID in data.Items) {
+                    const item = data.Items[itemID];
+                    if (item.Count && item.Count !== item.OnHand) {
+                        const { is_serial, asset_id } = await getItemDetails(itemID);
+
+                        jsonData.push({
+                            item_id: itemID,
+                            stocklocation_id: location,
+                            stockbin_id: 0,
+                            quantity_in: item.Count - item.OnHand,
+                            real_quantity_in: item.Count - item.OnHand,
+                            note: "Inventory count update",
+                            is_stock_take: true,
+                            is_serial,
+                            asset_id,
+                        });
+                    }
+                }
+            }
 
             return jsonData;
         }

@@ -2,10 +2,9 @@ const {initializeApp} = require("firebase/compat/app");
 const { getDatabase, ref, child, get, set, update , remove} = require("firebase/database");
 const axios = require('axios');
 const { getAccessToken } = require('../utils/UtilData'); 
-require('dotenv').config();
 
 const firebaseConfig = {
-    apiKey: process.env.API_KEY,
+    apiKey: "AIzaSyBXdAmIp2xkXKYA_aUsJ00mmYMC9EfJIvw",
     authDomain: "dashboard-it-3aa1e.firebaseapp.com",
     databaseURL: "https://dashboard-it-3aa1e-default-rtdb.firebaseio.com",
     projectId: "dashboard-it-3aa1e",
@@ -157,15 +156,16 @@ const firebaseConfig = {
     }
   }
 
+
 module.exports.index  = async function(req,res){
 
     const url = 'https://teleco.halopsa.com/api/ReportData/bec7f6dc-6768-4115-8eac-cce150a2533d';
 
     try {
        
-        // const response = await axios.get(url);
-        
-        // const categorizedData = await categorizeByLocation(response.data);
+        //Need switch to get all data from report and save to firebase currently it will replace.
+        const response = await axios.get(url);
+        const categorizedData = await categorizeByLocation(response.data);
         // await syncDataWithFirebase(categorizedData);
         
         getAllProductsFromFirebase().then(formattedData => {

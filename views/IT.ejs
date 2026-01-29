@@ -1,0 +1,291 @@
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Dashboard</title>
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"  crossorigin="anonymous">
+      <style>
+          body {
+              background-color: #222222;
+              color: #FFFFFF;
+              padding: 4px;
+          }
+          ul{
+              background-color: transparent;
+              box-shadow: 0 20px 30px 0 rgba(36,50,66,.14);
+              /* border: 1px solid #edeae9; */
+              border-radius:8px;
+              box-shadow:none;
+          }
+
+          ul li:hover {
+              box-shadow: 0 20px 30px 0 rgba(36,50,66,.20);
+              border-radius:8px;
+              border: 1px solid #afabac;
+              transition: .45s;
+              padding: 5px;
+              z-index: 4;
+              }
+
+        @media only screen and (max-width: 768px) {
+          .row {
+            margin-right: 5px; /* Adjust this value as needed */
+            margin-left: 5px;
+          }
+        }
+      </style>
+
+      <script>
+
+          setInterval(function() {
+              saveScrollPosition();
+              window.location.reload();
+          }, 60000); 
+
+
+      </script>
+  </head>
+      <body>
+
+
+      <% var newTicket=0, in_progress=0, closed=0, pending=0 , withUser =0, onHold =0, meanTime=0; AvgTimeToClose=0; const maxLength = 150; const agent = Agent;  %>
+      <%  for(var i=0; i < data.record_count; i++) { %>
+         <% if(data.tickets[i].status_id == 1) { newTicket+=1 }
+              else if(data.tickets[i].status_id == 9){
+                      closed +=1
+              }
+              else if(data.tickets[i].status_id == 2) { in_progress +=1}
+              else if(data.tickets[i].status_id == 4) { withUser +=1}
+              else if(data.tickets[i].status_id == 21) { onHold +=1}
+          %> 
+         %>
+       <%}
+      %>
+
+      <% 
+          meanTime = Math.floor(((AllTimeAvg.length) +  1) / 2);
+      %>
+
+      <div class="container-fluid" style="padding:10px;">
+          <small id="lastRefresh" style="font-size: 15px; float: right;"></small> <br>
+          <div style="text-align: center; margin: 10px;" class="display-4">IT Dashboard | Date: <%= today %>   </div> 
+          <div class="row" style="margin-top: 20px; ">
+
+              <div class="col-6 col-lg-2 mt-1">
+                  <div class="card text-center" style="width: 100%; background-color: #EE4E4E; color: white;">
+                      <div class="card-body">
+                        <h5 class="card-title"> New  </h5>
+                        <h5 class="card-text"> <%= newTicket %> </h5>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-6 col-lg-2 mt-1">
+                  <div class="card text-center" style="width: 100%; background-color: #A1DD70;color: white;">
+                      <div class="card-body">
+                        <h5 class="card-title"> Closed</h5>
+                        <h5 class="card-text"> <%= closed %> </h5>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-6 col-lg-2 mt-1">
+                  <div class="card text-center" style="width: 100%; background-color: #006769;color: white;">
+                      <div class="card-body">
+                        <h5 class="card-title">In Progress</h5>
+                        <h5 class="card-text"> <%= InProgress.record_count  %> </h3>
+                      </div>
+                   </div>
+              </div>
+              <div class="col-6 col-lg-2 mt-1">
+                  <div class="card text-center" style="width: 100%; background-color: #d6c783;color: white;">
+                      <div class="card-body">
+                        <h5 class="card-title">With User</h5>
+                        <h5 class="card-text"><%= WithUser.record_count %></h5>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="col-6 col-lg-2 mt-1">
+                  <div class="card text-center" style="width: 100%; background-color: rgb(204, 135, 56);color: white;">
+                      <div class="card-body">
+                        <h5 class="card-title">Mean Time</h5>
+                        <h5 class="card-text"><%= (AllTimeAvg[meanTime].cleartime * 60) /100 %> hrs</h5>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="col-6 col-lg-2 mt-1">
+                  <div class="card text-center" style="width: 100%; background-color: #708090; color: white;">
+                      <div class="card-body">
+                        <h5 class="card-title">on Hold </h5>
+                        <h5 class="card-text"><%= AllTimeOnHold.record_count %> </h5>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+
+
+          <div class="row justify-content-center" style="margin-top: 10px;">
+              <div class="col-12 col-lg-2" style="border: 1px solid gainsboro; border-radius: 20px; margin: 5px; margin-left: 10px;">
+                  <h4 style="text-align: center; " class="display-6">SLA Time </h4> <hr>
+                  <ul  class="list-group" id="sla-block" style="width: 100%; height: 550px; overflow: hidden;  padding: 7px; ">
+
+                      <% var count =0; var color="";
+                           for(var j=0; j < SlaData.page_size; j++) { 
+                              if(SlaData.tickets[j].status_id != 9){
+                                  if(SlaData.tickets[j].slatimeleft < 0){ let agent_id = SlaData.tickets[j].agent_id; if(SlaData.tickets[j].agent_id == 1) {color='#B22222'} else {color='none'} %>
+                                       <a href="https://teleco.halopsa.com/tickets?id=<%=SlaData.tickets[j].id %>  " target="_blank" style="text-decoration: none; padding: 5px; border-radius: 15px; background-color:<%= color %> "><li style="color: #CCCCCC;">
+                                        <b> <span style="color: rgb(240, 141, 29);"> <%= SlaData.tickets[j].client_name  %> </span> </b> <br> <span style="color:#00BFFF   ;">Ticket#<%=SlaData.tickets[j].id %> </span> <span style="color: #FFFF00;">   <%= agent[agent_id] %></span> <br> 
+                                        <%= SlaData.tickets[j].summary %>
+                                        <span style="float: right;">   <%= SlaData.tickets[j].slatimeleft.toFixed(2) %> hrs </span> 
+                                      </li></a>
+                                      <hr>  
+                                  <%}
+                          }
+                      } %>
+                  </ul>
+              </div>
+
+              <div class="col-12 col-lg-2" style="border: 1px solid gainsboro; border-radius: 20px; margin: 5px; margin-left: 10px;">
+                  <h4 class="display-6" style="text-align: center;">New Tickets</h4> <hr>
+                  <ul  class="list-group" id="new-ticket-block"   style="width: 100%; height: 550px; overflow: hidden;  padding: 7px; list-style-type: none;">
+                       <%  for(var i=0; i < data.record_count; i++) { 
+                              if(data.tickets[i].status_id == 1) 
+                              { %>
+                                  <a href="https://teleco.halopsa.com/tickets?id=<%=data.tickets[i].id %>" target="_blank" style="text-decoration: none;">
+                                      <li>
+                                         <span style="color: #EE4E4E;"> <%= data.tickets[i].client_name %> </span> | <span style="color:#FFA500  ;"> <%= data.tickets[i].summary %> </span><br>
+                                          <small style="color: #CCCCCC; font-family: monospace;"> <% const truncatedText = data.tickets[i].details.length > maxLength ? data.tickets[i].details.slice(0, maxLength) + '...' : data.tickets[i].details; %>  <%=truncatedText  %></small>
+                                      </li>
+                                  </a> <hr>
+                             <% }
+                      }%>
+                  </ul>
+
+              </div>
+
+              <div class="col-12 col-lg-2" style="border: 1px solid gainsboro; border-radius: 20px; margin: 5px; margin-left: 10px;">
+                  <h4 class="display-6" style="text-align: center;">In Progress</h4> <hr>
+                  <ul  class="list-group" id="ticket-in-progress"  style="width: 100%; height: 550px; overflow: hidden;  padding: 7px; list-style-type: none;">
+                      <%  for(var i=0; i < InProgress.record_count; i++) { %>
+                              <a href="https://teleco.halopsa.com/tickets?id=<%=InProgress.tickets[i].id %>" target="_blank" style="text-decoration: none;">
+                                  <li>
+                                      <span style="color: #FFFF00;"> <%= agent[InProgress.tickets[i].agent_id] %> </span> <span style="color: #00BFFF;"> Ticket# <%= InProgress.tickets[i].id %> </span> <br>
+                                     <span style="color: #EE4E4E;"> <%= InProgress.tickets[i].client_name %> </span> | <span style="color: #FFA500;"><%= InProgress.tickets[i].summary %></span>  <br>
+                                      <small style="color: #CCCCCC; font-family: monospace;"> <% const truncatedTextnew = InProgress.tickets[i].details.length > 70 ? InProgress.tickets[i].details.slice(0, 70) + '...' : InProgress.tickets[i].details; %>  <%=truncatedTextnew  %></small>
+                                  </li>
+                              </a> <hr>
+                         <% }
+                  %>
+                  </ul>
+
+              </div>
+
+
+              <div class="col-12 col-lg-2" style="border: 1px solid gainsboro; border-radius: 20px; margin: 5px; margin-left: 10px;">
+                  <h4 class="display-6" style="text-align: center;">Tickets With User</h4> <hr>
+                  <ul  class="list-group" id="ticket-withuser"  style="width: 100%; height: 550px; overflow: hidden;  padding: 7px; list-style-type: none;">
+                      <%  for(var i=0; i < WithUser.record_count; i++) { %>
+                              <a href="https://teleco.halopsa.com/tickets?id=<%=WithUser.tickets[i].id %>" target="_blank" style="text-decoration: none;">
+                                  <li>
+                                      <span style="color: #FFFF00;"> <%= agent[WithUser.tickets[i].agent_id] %> </span> <span style="color: #00BFFF;"> Ticket# <%= WithUser.tickets[i].id %> </span> <br>
+                                     <span style="color: #EE4E4E;"> <%= WithUser.tickets[i].client_name %> </span> | <span style="color: #FFA500;"><%= WithUser.tickets[i].summary %></span>  <br>
+                                      <small style="color: #CCCCCC; font-family: monospace;"> <% const truncatedTextnew = WithUser.tickets[i].details.length > 70 ? WithUser.tickets[i].details.slice(0, 70) + '...' : WithUser.tickets[i].details; %>  <%=truncatedTextnew  %></small>
+                                  </li>
+                              </a> <hr>
+                         <% }
+                  %>
+                  </ul>
+              </div>
+
+              <div class="col-12 col-lg-2" style="border: 1px solid gainsboro; border-radius: 20px; margin: 5px; margin-left: 10px;">
+                  <h4 class="display-6" style="text-align: center;">Tickets on Hold</h4> <hr>
+                  <ul  class="list-group" id="ticket-onHold"  style="width: 100%; height: 550px; overflow: hidden;  padding: 7px; list-style-type: none;">
+                      <%  for(var i=0; i < AllTimeOnHold.record_count; i++) { %>
+                              <a href="https://teleco.halopsa.com/tickets?id=<%=AllTimeOnHold.tickets[i].id %>" target="_blank" style="text-decoration: none;">
+                                  <li>
+                                      <span style="color: #FFFF00;"> <%= agent[AllTimeOnHold.tickets[i].agent_id] %> </span> <span style="color: #00BFFF;"> Ticket# <%= AllTimeOnHold.tickets[i].id %> </span> <br>
+                                     <span style="color: #EE4E4E;"> <%= AllTimeOnHold.tickets[i].client_name %> </span> | <span style="color: #FFA500;"><%= AllTimeOnHold.tickets[i].summary %></span>  <br>
+                                      <small style="color: #CCCCCC; font-family: monospace;"> <% const truncatedTextnew = AllTimeOnHold.tickets[i].details.length > 70 ? AllTimeOnHold.tickets[i].details.slice(0, 70) + '...' : AllTimeOnHold.tickets[i].details; %>  <%=truncatedTextnew  %></small>
+                                  </li>
+                              </a> <hr>
+                         <% }
+                  %>
+                  </ul>
+              </div>
+
+
+
+      </div>
+  </body>
+
+  <script>
+
+      const sla_block = document.getElementById('sla-block');
+      const new_ticket_block = document.getElementById('new-ticket-block');
+      const ticket_in_progress = document.getElementById('ticket-in-progress');
+      const ticket_withuser = document.getElementById('ticket-withuser');
+      const ticket_onHold = document.getElementById('ticket-onHold');
+
+      function setScrollPosition() {
+          sla_block.scrollTop = localStorage.getItem('sla_block');
+          new_ticket_block.scrollTop = localStorage.getItem('new_ticket_block');
+          ticket_in_progress.scrollTop = localStorage.getItem('ticket_in_progress');
+          ticket_withuser.scrollTop = localStorage.getItem('ticket_withuser');
+          ticket_onHold.scrollTop = localStorage.getItem('ticket_onHold');
+      }
+
+
+      function saveScrollPosition(){
+          localStorage.setItem('sla_block',sla_block.scrollTop);
+          localStorage.setItem('new_ticket_block',new_ticket_block.scrollTop);
+          localStorage.setItem('ticket_in_progress',ticket_in_progress.scrollTop);
+          localStorage.setItem('ticket_withuser',ticket_withuser.scrollTop);
+          localStorage.setItem('ticket_onHold',ticket_onHold.scrollTop);
+      }
+
+      window.addEventListener('load', setScrollPosition());
+      window.addEventListener('beforeunload', saveScrollPosition());
+
+
+
+      function autoScroll(){
+          sla_block.scrollTop +=1;
+          new_ticket_block.scrollTop +=1;
+          ticket_in_progress.scrollTop+=1;
+          ticket_withuser.scrollTop+=1;
+         ticket_onHold.scrollTop+=1;
+
+          // console.log(sla_block.scrollTop);
+
+          if (sla_block.scrollTop >= sla_block.scrollHeight - sla_block.clientHeight) {
+               sla_block.scrollTop = 0;
+          }
+          if (new_ticket_block.scrollTop >= new_ticket_block.scrollHeight - new_ticket_block.clientHeight) {
+               new_ticket_block.scrollTop = 0;
+          }
+          if (ticket_in_progress.scrollTop >= ticket_in_progress.scrollHeight - ticket_in_progress.clientHeight) {
+               ticket_in_progress.scrollTop = 0;
+          }
+          if (ticket_withuser.scrollTop >= ticket_withuser.scrollHeight - ticket_withuser.clientHeight) {
+               ticket_withuser.scrollTop = 0;
+          }
+          if (ticket_onHold.scrollTop >= ticket_onHold.scrollHeight - ticket_onHold.clientHeight) {
+               ticket_onHold.scrollTop = 0;
+          }
+      }
+
+
+      setInterval(autoScroll,100);
+
+      const currentTime = new Date().toLocaleString();
+      document.getElementById('lastRefresh').innerText = `Last Refresh Time: ${currentTime}`;
+      localStorage.setItem('lastRefresh', currentTime);
+
+      console.log(new Date());
+
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+  </html>

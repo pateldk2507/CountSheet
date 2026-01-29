@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css" />
+
+    <title>Weekly Schedule</title>
+
+    <style>
+        .table{
+            color: #7e7e7e;
+        }
+
+        .table td{
+          border-top: 1px solid #ababab !important;
+        }
+
+        .today td{
+          border-radius: 7px;
+        }
+        body{
+            background-color: #000;
+            color: rgb(255, 255, 255);
+        }
+        .card{
+          color: #1565C0;
+          background-color: #000;
+          height: 48vh;
+          overflow: hidden;
+          border-radius: 10px;
+        }
+        .today{
+          background-color: #5f5f5f7d;
+          color: #4CAF50;
+          border-radius: 5px;
+          font-size: medium;
+          font-weight: 600;
+        }
+
+        .otherDay{
+          color: #525252;
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px; 
+        }            
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #5f6169; 
+            border-radius: 0px; 
+        }            
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ccc; 
+        }
+        html {
+            scroll-behavior: smooth; 
+        }
+        .box {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+        }
+
+       
+    </style>
+
+    <script>
+         setInterval(function() {
+              window.location.reload();
+          }, 60000); 
+
+
+        var weeklyData =  <%- JSON.stringify(weeklyData) %>;
+        var Agent = <%- JSON.stringify(Agent) %>;
+        var agentIds = <%- JSON.stringify(agentIds) %>;
+        
+    </script>
+  </head>
+  <body>
+    <script>let dateonhead = new Date();  </script>
+
+    <h5  style="text-align: center; font-size: 20px;margin: 0;margin-bottom: 5px; color: #bb5d62;"> 
+        Today: <script> document.write(dateonhead.toISOString().slice(0,10));
+                var d = new Date().toLocaleTimeString([], {timeStyle: 'short'}); 
+                document.write("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "+d);  
+                </script>   
+    </h5>
+  
+    <div class="container-fluid">
+        <div id="agent-tables" class="box">
+            <!-- Tables will be generated dynamically here -->
+        </div>
+    </div>
+    
+    <script>
+        const agentData = agentIds; // Define agent IDs dynamically if needed
+        const container = document.getElementById('agent-tables');
+    
+        agentData.forEach(agentId => {
+            let colDiv = document.createElement('div');
+            colDiv.className = 'col';
+            colDiv.innerHTML = `
+                <div class="card p-2">
+                    <h5><b>${Agent[agentId]}</b></h5>
+                    <table class="table" id="table${agentId}"></table>
+                </div>
+            `;
+            container.appendChild(colDiv);
+        });
+    
+        const filteredData = weeklyData.filter(record => record.is_private === false && record.ticket_id !== 0);
+        const groupedData = filteredData.reduce((acc, record) => {
+            if (!acc[record.agent_id]) acc[record.agent_id] = [];
+            acc[record.agent_id].push(record);
+            return acc;
+        }, {});
+    
+        let DayofWeek = ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    
+        Object.entries(groupedData).forEach(([agentId, records]) => {
+            let table = document.getElementById(`table${agentId}`);
+            if (table) {
+                records.forEach(ele => {
+                    let start_date = new Date(ele.start_date + 'Z');
+                    let end_date = new Date(ele.end_date + 'Z');
+                    let options = { timeStyle: 'short', hour12: true };
+                    let row = document.createElement('tr');
+                    let td = document.createElement('td');
+                    let dateText = `${DayofWeek[start_date.getDay()]} - ${start_date.toLocaleDateString()}`;
+                    let timeText = `From: ${start_date.toLocaleTimeString('en-US', options)} To: ${end_date.toLocaleTimeString('en-US', options)}`;
+                    let subjectText = ele.subject ? `<span>${ele.subject}</span>` : `<span>Not Scheduled</span>`;
+    
+                    row.classList.add(start_date.getDate() === new Date().getDate() ? 'today' : 'otherDay');
+                    td.innerHTML = `<li>${dateText} <br> ${ele.client_name || ''} - ${ele.site_name || ''} <br> ${subjectText} <br> ${timeText}</li>`;
+                    row.appendChild(td);
+                    table.appendChild(row);
+                });
+            }
+        });
+    </script>
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+  </body>
+</html>
+
+
+

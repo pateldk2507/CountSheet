@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <title>Invoice With Serial Number</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+
+    <!-- External CSS libraries -->
+   
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link type="text/css" rel="stylesheet" href="assets/fonts/font-awesome/css/font-awesome.min.css">
+
+
+    <!-- Google fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Custom Stylesheet -->
+    <link type="text/css" rel="stylesheet" href="../assets/css/invoice.css" >
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <style>
+        .invoice-4 .invoice-info {
+            padding: 0px 0px 0px;
+        }
+        .invoice-4 .invoice-top {
+            padding: 10px 0px 7px;
+        }
+        .invoice-4 .order-summary {
+            padding: 0 0px 10px;
+        }
+        .invoice-4{
+            background-color: white;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+        
+        span {
+            width: max-content;
+            line-break: auto;
+        }
+        small{
+            width: 400px;
+            line-break: auto;
+        }
+        .invoice-4 .item-desc-1 span {
+            font-size: 0.9em;
+            display: inline;
+            color: inherit;
+        }
+        
+        .invoice-4 .item-desc-1 small {
+            font-size: 0.9em;
+            color: inherit;
+        }
+        .invoice-4 .table td, .invoice-4 .table th {
+            padding: 5px 5px;
+        }
+        .invoice-content .invo-addr-1 {
+             line-height: normal;
+        }
+        .invoice-4 .invoice-informeshon {
+            padding: 0 0px 0px;
+        }
+        .invoice-3 .order-summary tbody, td, tfoot, th, thead, tr {
+            /* border: solid 1px #f3f2f2; */
+            border-bottom: 1px solid #d5d5d5;
+        }
+        @page  {
+            margin-top: 0.3in;
+            padding-bottom: 0.1in;
+            margin-left: 0.1in;
+            margin-right: 0.1in;
+            size: letter; 
+        }
+
+        .text-green{
+            color: green !important;
+        }
+        
+        .text-muted {
+            color: #535353 !important;
+            font-size: 0.9em;
+           
+        }
+        .invoice-3 .order-summary tbody, td, tfoot, th, thead, tr {
+             border: none;
+             border-bottom: 1px solid rgb(223, 223, 223);
+        }
+       
+        @media print {
+            #subSection {
+                break-inside: avoid;
+            }
+            #items > tbody{
+                break-inside: avoid;
+            }
+        }
+
+        html {
+        position: relative;
+        min-height: 100%;
+        }
+
+        body {
+            margin-bottom: 60px; /* Margin bottom by footer height */
+            }
+
+        .footer{
+            position: absolute;
+            bottom: 0;
+            width: 1000px;
+            text-align: center;
+            height: 60px; /* Set the fixed height of the footer here */
+            line-height: 60px; /* Vertically center the text there */
+           
+        }
+        
+    </style>
+  
+
+</head>
+<body>
+
+<!-- Invoice 4 start -->
+<div class="invoice-4 invoice-content" id="myInvoice">
+    <div class="container">
+        <div class="row" id="row">
+            <!-- <div class=""> -->
+                <div class="invoice-inner col-lg-12" id="invoice_wrapper">
+                    <div class="invoice-top">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="">
+                                    <img src="https://teleco.ca/wp-content/uploads/2021/07/TELECO-Logo-Large.png" alt="logo" height="60px" width="60px">
+                                    <div style="margin-top: 7px; font-size: 0.9em; color: black;">1218 Amber Dr, Thunder Bay, ON P7B 6M5 </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="invoice text-end">
+                                    <h1 style="color: #73D8FF;">Invoice #<span id="ID"></span> </h1>
+                                    <h6 id="invoiceDate">Date: </h6>
+                                </div>
+                            </div>
+                        </div>
+                        <hr style="margin: 0; padding: 0; height: 2px;">
+                    </div>
+                   
+                    <div class="invoice-info">
+                        <div class="row">
+                            <div class="col-sm-6" style="margin-bottom: -15px;">
+                                <div class="invoice-number">
+                                    <b>   <h5 class="inv-title-1">Invoice To</h5> </b>
+                                   <p class="invo-addr-1" style="font-size: 0.9em;" id="customer">
+                                      
+                                    </p> 
+                                    <div class="invo-addr-1" style="font-size: 0.9em; color: black;">
+                                        <b>Site Name: </b> <span id="SiteName"> </span> <br/>
+                                        <b>Contact: </b> <span id="Contact"></span> <br/>
+                                        <b>Customer PO: </b> <span id="CustomerPO"></span><br/>
+                                        <b>Due Date: </b> <span id="DueDate"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="invoice-number text-end">
+                                    <p class="invo-addr-1" style="font-size: 0.9em; color: black;">
+                                        <b>Tax No: </b> 80229 6319 RT0001  <br/>
+                                       <b>Bank Details: </b> Royal Bank of Canada <br/>
+                                       <b>Institution: </b> 003 | <b>Transit: </b> 09870 | <b> Account: </b> 1001874 <br/>
+                                       accounting@teleco.ca <br/>
+                                       <b>Payment Status: </b> <span id="PaymentStatus"></span> <br/>
+                                       <b>Invoice Ref: </b> <span id="InvoiceRef"></span> <br/>
+                                       <b>Ticket Ref: </b> <span id="faultid"></span> <br/>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr style="margin-top: 0px; padding: 0; height: 2px;">
+                    </div>
+                    <div class="order-summary">
+                        <div class="table-responsive">
+                            <table class="invoice-table" id="items" style="width: 100%;">
+                                <thead class="bg-active">
+                                <tr style="font-weight: 600; ">
+                                    <th style="font-size: 0.9em;" class="text-center">Description </th>
+                                    <th style="font-size: 0.9em;" class="text-center">Quantity</th>
+                                    <th style="font-size: 0.9em;" class="text-center">Unit Price</th>
+                                    <th style="font-size: 0.9em;" class="text-center">Total Tax</th>
+                                    <th style="font-size: 0.9em; text-align: right;" >Price</th>
+                                </tr>
+                                </thead>
+                                <tbody style="border-bottom: #f0f0f0;">
+                                
+                                </tbody>
+                            </table>
+                            <table style="float: right;font-size:0.9em; width: 30%;margin-top: 10px; " id="subSection"> 
+                                
+                            </table>
+                        </div>
+                        
+                    </div>
+            
+                    <div class="invoice-information">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="nates ">
+                                    <h4 class="inv-title-1">Notes</h4>
+                                    <p class="text-muted" id="notes" style="font-size: 0.9em;"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                 
+                    
+                    <div class="row">
+                        <div class="col footer">
+                            www.teleco.ca | Phone: (807) 345-2900 | Fax: (807) 345-4539
+                        </div>
+                    </div>
+                   
+                    
+                   
+                <!-- </div> -->
+                <div class="invoice-btn-section clearfix d-print-none">
+                    <a href="javascript:window.print()" class="btn btn-lg btn-print">
+                        <i class="fa fa-print"></i> Print Invoice
+                    </a>  
+                    
+                </div>
+                <button type="button" id="btnModal" style="display: none;" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                    
+                </button>
+
+                
+
+                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                      <div class="modal-content">
+                       
+                        <div class="modal-body">
+                            <h4>Getting Invoice Data </h4><h4>Please Wait..</h4>
+                            <div class="spinner-border" style="width: 3rem; height: 3rem; text-align: center;" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <div id="error" class="bg-danger text-white"></div>
+                            <button type="button" id="btnModalClose" style="display: none;" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        
+                      </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Invoice 4 end -->
+
+<script>
+
+var database;
+
+var userInput = prompt("Please enter Invoice Number:");
+if(userInput !=null){
+    document.getElementById('btnModal').click();
+    getData(userInput);
+}else{
+   alert("you cancelled the input");
+}
+
+
+const categorizedData = {
+    labour: [],
+    product: [],
+    misc: [],
+    discount : []
+};
+
+    function getData(invoiceID){
+        let table = document.getElementById('items');
+        let subSection = document.getElementById('subSection');
+
+        fetch('invoice/data?invoiceID=' + invoiceID)
+        .then(response => response.json())
+        .then(data => {
+
+            if(data.status != 400){
+
+            
+            database = data.data;
+        
+            // console.log(database);
+            
+            
+            let counter = 0;
+            let SN='S/N: ';
+
+           database.lines.forEach(element => {
+                let assetSN;
+               
+                if(element.isgroupdesc == false){
+                    
+                    if(data.data.salesorder != undefined){
+                       database.salesorder.lines.forEach(so=>{
+                            if(so.productcode == element.linked_item.supplier_part_code){
+                                // console.log(element.linked_item.supplier_part_code);
+                                assetSN = so.consigned_assets;
+                            }
+                        })
+                    }else{
+                        assetSN = undefined;
+                    }
+
+                    if(assetSN != undefined){
+                        let consigeditem = 0;
+                        // console.log(assetSN);
+                        
+                        assetSN.forEach(element=>{
+                            SN += assetSN[consigeditem].key_field2 + ' '+assetSN[consigeditem].key_field3 +' ' ;
+                            consigeditem++;
+                        });
+                    }else{
+                        SN = '';
+                    } 
+
+                    if (element.linked_item.supplier_part_code) 
+                    {
+                        if((element.linked_item.supplier_part_code).includes("LBR")){
+                            categorizedData.labour.push(element);
+                         } else if (element.linked_item.supplier_part_code) {
+                            categorizedData.product.push(element);
+                        }
+                    }else {
+                        if((element.item_shortdescription).includes('Discount')){
+                            categorizedData.discount.push(element);
+                        }else{
+                            categorizedData.misc.push(element);
+                        }
+                    }
+
+
+                    table.innerHTML += 
+                        `<tr class="${(element.item_shortdescription).includes('Discount') ? 'text-green' : ''}">
+                            <td style="font-size:0.9em; padding:5px;">
+                                <div class="item-desc-1 ${(element.item_shortdescription).includes('Discount') ? 'text-green' : ''}">
+                                    <span> ${element.item_shortdescription} </span>
+                                    <small> ${element.linked_item.supplier_part_code !== undefined ? ' Part No: ' + element.linked_item.supplier_part_code : 'Part No: N/A'} <br> ${SN}</small>
+                                </div>
+                            </td>
+                            <td style="font-size:0.9em;padding:5px;" class="text-center">${element.qty_order}</td>
+                            <td style="font-size:0.9em;padding:5px;" class="text-center">$${(element.unit_price).toFixed(2)}</td>
+                            <td style="font-size:0.9em;padding:5px;" class="text-center">$${(element.tax_amount).toFixed(2)} </td>
+                            <td style="font-size:0.9em;padding:5px;text-align: right;">$${(element.total_net_total).toFixed(2)}</td>
+                        </tr>`;
+                        SN='S/N: ';
+                }
+                        counter++;
+                              
+            });
+
+                subtotal = [((data.data.revenue).toFixed(2))];
+                totalTax =  [((data.data.tax_total).toFixed(2))];
+                TotalInvoice = [((data.data.total).toFixed(2))];
+            
+
+                console.log(categorizedData);
+                
+
+            subSection.innerHTML  += `<tr > <td>  <b style="float:left">Sub total : </b> <span id="invoiceRevenue" style="float:right">$${(data.data.revenue).toFixed(2)}</span></td></tr>
+                                        
+                                        <tr><td><b style="float:left">Total Tax :</b> <span id="invoiceTax"  style="float:right">$${(data.data.tax_total).toFixed(2)}</span></td></tr>
+                                        
+                                        <tr><td style="border-bottom: 1px solid white;"><b style="float:left">Total :</b> <span id="invoiceTotal"  style="float:right">$${(data.data.total).toFixed(2)}</span></td></tr>`;
+
+            var address = (
+            (database.address.line1 ? database.address.line1 + ', ' : '') +
+            (database.address.line2 ? database.address.line2 + ', ' : '') +
+            (database.address.line3 ? database.address.line3 + ', ' : '') +
+            (database.address.line4 ? database.address.line4 + ', ' : '') +
+            (database.address.postcode ? database.address.postcode : '')
+            ).trim();
+
+            var siteaddress = ( 
+                (database.site.delivery_address.line1 ? database.site.delivery_address.line1 + ', ' : '') + 
+                (database.site.delivery_address.line2 ? database.site.delivery_address.line2 + ', ' : '') + 
+                (database.site.delivery_address.line3 ? database.site.delivery_address.line3 + ', ' : '') + 
+                (database.site.delivery_address.line4 ? database.site.delivery_address.line4 + ', ' : '') + 
+                (database.site.delivery_address.postcode ? database.site.delivery_address.postcode : '') 
+            ).trim();
+
+
+            let isSameAddress = address == siteaddress;
+
+
+            document.getElementById('ID').innerHTML = database.id;
+            document.getElementById('invoiceDate').innerHTML += new Date(database.invoice_date).toLocaleDateString();
+            document.getElementById('customer').innerHTML += '<b>' + database.client_name + '</b><br>' + address;
+            document.getElementById('DueDate').innerHTML = new Date(database.duedate).toLocaleDateString();
+            document.getElementById('CustomerPO').innerHTML = database.salesorder!== undefined ? database.salesorder.po_number : 'N/A';
+            document.getElementById('Contact').innerHTML = database.client !== undefined ? database.client.main_phonenumber : 'N/A';
+
+            if(isSameAddress){
+                document.getElementById('SiteName').innerHTML = database.site !== undefined ? database.site.name : 'N/A';
+            }else{
+                document.getElementById('SiteName').innerHTML = database.site !== undefined ? database.site.name +' | '+ siteaddress : 'N/A';
+            }
+            
+            document.getElementById('faultid').innerHTML = database.ticket_id !== undefined ? database.ticket_id : 'N/A' ;
+            document.getElementById('InvoiceRef').innerHTML = database.reference !== undefined ? database.reference : 'N/A';
+            document.getElementById('PaymentStatus').innerHTML =  database.paymentstatus == -1 ? 'Not Paid' : 'Paid';
+            document.title = 'Invoice #' + database.id;
+            document.getElementById('notes').innerText = database.notes_1 !== undefined ? database.notes_1 : ' ';
+
+            document.getElementById('btnModalClose').click();
+        }else{
+            alert('No Invoice Found - Please check the invoice number'); 
+            location.reload();
+        }
+        })
+        .catch(function (error) {
+            if (error.response) {
+          
+              console.log(error.response.data);
+              console.log(error.response.status);
+              console.log(error.response.headers);
+            } else if (error.request) {
+             
+              console.log(error.request);
+            } else {
+             
+                console.log(error);
+            }
+            console.log(error.config);
+            // document.getElementById('btnModalClose').click();
+            // console.log(error);
+            // document.getElementById('error').textContent = `Error fetching data: ${error.message}`;
+        });
+        
+    return false;
+    }
+
+</script>
+
+</body>
+</html>
